@@ -1,0 +1,1617 @@
+# SWAHIVO LOGISTICS OS
+## MASTER UI RECONSTRUCTION & FULL-STACK IMPLEMENTATION PROMPT
+### Admin + Customer + Warehouse + Driver Dashboards and All Child Pages
+
+**PROJECT TYPE:** Existing Application Enhancement  
+**DESIGN AUTHORITY:** All 18 Uploaded Reference Screenshots  
+**IMPLEMENTATION STANDARD:** High-Fidelity Screenshot Reconstruction  
+**BACKEND:** Convex — Real Database and Business Operations  
+**UI RESTRICTION:** No Popup-Card-Based Workflows  
+**BRAND:** SWAHIVO Logistics OS
+
+---
+
+# 1. CRITICAL INSTRUCTIONS — READ FIRST
+
+You are acting as a senior enterprise SaaS frontend architect, UI reconstruction engineer, logistics systems engineer, Convex backend engineer, and quality assurance specialist.
+
+I have uploaded screenshots showing exactly how my logistics SaaS application must look.
+
+**YOUR TASK IS TO RECONSTRUCT THESE DESIGNS, NOT TO REDESIGN THEM.**
+
+The attached screenshots are the visual authority for this project.
+
+You are not being asked to suggest a new interface, generate an alternative design, or develop a simplified prototype.
+
+You must implement the layouts, component structures, page compositions, sidebar navigation, tables, charts, maps, forms, tabs, operational panels, and visual hierarchy shown in the uploaded images.
+
+Where the screenshot shows a particular arrangement, preserve it.
+
+Where the screenshot provides no information, derive the missing interface from the nearest applicable uploaded reference, using the same design system and structural conventions.
+
+Never substitute your personal UI preferences for the provided designs.
+
+## NON-NEGOTIABLE RULES
+
+1. Do not create a new application.
+2. Do not rebuild my existing project.
+3. Do not replace the technology stack.
+4. Do not redesign the uploaded screenshots.
+5. Do not create generic dashboard templates.
+6. Do not replace full operational pages with popup cards.
+7. Do not hide entire workflows inside modal dialogs.
+8. Do not create decorative, nonfunctional navigation.
+9. Do not put the same dataset on every status tab.
+10. Do not use fake authentication or simulated backend success.
+11. Do not use mock operational data in production.
+12. Do not generate fake GPS locations or QR codes.
+13. Do not omit any major section visible in a reference image.
+14. Do not copy placeholder statistics from reference images as live data.
+15. Do not modify working application modules unnecessarily.
+16. Do not declare a page complete before verifying its appearance and functionality.
+
+**You are required to follow the references even when your default design preferences differ.**
+
+---
+
+# 2. KEEP MY EXISTING TECHNOLOGY STACK
+
+The project already uses:
+
+- Vite
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Convex backend and database
+
+Preserve the existing:
+
+- Project directory structure where practical
+- React Router configuration or current routing architecture
+- Authentication integration
+- Convex schema and functions
+- Organization and tenant model
+- Existing working components
+- Shipment and warehouse business logic
+- Real-time synchronization
+- Shipping documents
+- Backend integrations
+- Deployment configuration
+
+Do not introduce Next.js, Supabase, Firebase or another primary database.
+
+Suggested libraries, only where needed and compatible with the current project:
+
+| Feature | Implementation |
+|---|---|
+| Charts | Existing chart library, or Recharts |
+| Icons | Lucide React |
+| Warehouse 2D Map | react-konva + konva |
+| QR Generator | qrcode |
+| QR Scanner | @zxing/browser |
+| Printing | react-to-print |
+| Real geographic maps | Existing map library; otherwise a suitable MapLibre or Leaflet integration |
+| Server data | Convex queries and mutations |
+| Real-time changes | Convex reactive subscriptions |
+| Testing | Vitest + Playwright |
+
+Do not install redundant packages when equivalent working libraries already exist.
+
+---
+
+# 3. SCREENSHOT INVENTORY — MANDATORY REFERENCE MAPPING
+
+You will receive 18 reference images.
+
+Inspect every image at its original resolution.
+
+Before writing UI code, identify:
+
+- Main layout grid
+- Left sidebar structure
+- Top navigation
+- Page heading
+- Breadcrumbs
+- KPI card positions
+- Content panel arrangement
+- Tables and columns
+- Tabs
+- Action buttons
+- Search and filter controls
+- Maps
+- Charts
+- Detail panels
+- Status colors
+- Forms
+- Pagination
+- Responsive implications
+
+## Primary Overview References
+
+**REF-01 — Admin Master Reference**
+
+`TZLogistics Admin Dashboard Overview(2).png`
+
+Use as the authoritative reference for the application's master dashboard styling and Admin overview.
+
+**REF-02 — Customer Dashboard**
+
+`SWAHIVO Logistics Customer Dashboard(1).png`
+
+Use for customer-specific content, page composition and navigation.
+
+**REF-03 — Additional Customer Operations Reference**
+
+`TZLogistics Operations Dashboard(2).png`
+
+Use for detailed Customer navigation, warehouse inventory, storage bookings, shipments, payments, tracking and activity widgets.
+
+**REF-04 — Warehouse Manager Dashboard**
+
+`TZLogistics Warehouse Operations Dashboard(2).png`
+
+Use for warehouse operations overview and its primary menu.
+
+**REF-05 — Driver Dashboard**
+
+`TZLogistics Driver Dashboard(2).png`
+
+Use for driver-specific navigation, assigned shipments, trip routes, pickup operations and delivery workflows.
+
+**REF-06 — Public Landing Page**
+
+`TZLogistics Warehouse & Shipping Platform(2).png`
+
+This is a separate public-facing website design, not a dashboard.
+
+## Detailed Child-Page References
+
+**REF-07 — Shipments**
+
+`SWAHIVO Logistics Shipment Dashboard(1).png`
+
+**REF-08 — Create Shipment**
+
+`SWAHIVO Shipment Creation Dashboard(1).png`
+
+**REF-09 — Customers / CRM**
+
+`Customers Dashboard image: SWAHIVO Logistics Customer Dashboard(1).png` is the customer overview reference; also use the separately supplied Customers CRM screenshot if available in the upload set.
+
+**REF-10 — Transporter Management**
+
+`Transporter Management Dashboard(1).png`
+
+**REF-11 — Billing**
+
+`SWAHIVO Billing Dashboard Overview(1).png`
+
+**REF-12 — Warehouse Reports**
+
+`Swahivo Logistics Reports Dashboard(1).png`
+
+**REF-13 — Warehouse Map Designer**
+
+`Warehouse Map Designer Dashboard(1).png`
+
+**REF-14 — Racks & Bins**
+
+`Warehouse Racks & Bins Dashboard(1).png`
+
+**REF-15 — Receiving & Putaway**
+
+`SWAHIVO Warehouse Receiving Dashboard(1).png`
+
+**REF-16 — QR Labels & Scanner**
+
+`Warehouse QR Labels Dashboard(1).png`
+
+**REF-17 — Package Locator**
+
+`SWAHIVO Warehouse Package Locator Dashboard(1).png`
+
+**REF-18 — Transfers & Picking**
+
+`Warehouse Transfers & Picking Dashboard(1).png`
+
+**REF-19 — Cycle Counts**
+
+`Warehouse Cycle Count Dashboard(1).png`
+
+Note: REF numbers represent design reference categories. Some references serve more than one screen. Inspect the actual 18 attached files rather than assuming there are 19 separate images.
+
+If an explicitly referenced screenshot is not accessible, report its filename and use the closest available supplied design until the missing reference is available. Never claim to have inspected an inaccessible file.
+
+---
+
+# 4. MASTER DESIGN SYSTEM — ADMIN DASHBOARD
+
+The file:
+
+`TZLogistics Admin Dashboard Overview(2).png`
+
+defines the shared visual conventions.
+
+## Desktop Dashboard Structure
+
+Follow this arrangement:
+
+1. Fixed dark navy sidebar on the left.
+2. Full-width top navigation across the content area.
+3. Main page heading and subtitle.
+4. Action controls aligned to the upper right.
+5. A single horizontal row of summary KPI cards where space permits.
+6. A structured dashboard content grid.
+7. Charts, maps and tables organized exactly like the reference.
+8. Compact secondary panels.
+9. Consistent page padding and alignment.
+
+At approximately 1536 × 1024 resolution, reproduce the reference's desktop composition.
+
+### Sidebar
+
+Use a dark navy background.
+
+Maintain:
+
+- White navigation text
+- Thin outlined navigation icons
+- Active item with strong blue highlight
+- Clear section headings
+- Compact row spacing
+- Nested expandable navigation
+- Consistent hover and active states
+- Appropriate scroll behavior
+
+Use an approximately 220–235px sidebar on desktop, adjusted only when necessary to match the reference.
+
+Do not use a floating sidebar.
+
+Do not replace the sidebar with a horizontal navigation menu on desktop.
+
+### Header
+
+Recreate the reference header structure:
+
+- Global search
+- Notification icon and unread indicator
+- Messaging shortcut when applicable
+- Language selection where configured
+- Current authenticated user avatar
+- Current user's role
+- Profile controls
+
+### Typography
+
+Maintain a clean, professional sans-serif UI.
+
+Reuse the existing font configuration wherever possible.
+
+Use:
+
+- Bold dark page titles
+- Medium-weight card headings
+- Compact table typography
+- Muted metadata
+- Clear numerical emphasis
+- Restrained color contrast
+
+Do not introduce decorative typography, oversized headings or excessive whitespace.
+
+### Content Styling
+
+Match:
+
+- Light gray-blue main background
+- White rectangular content cards
+- Subtle card boundaries
+- Small, consistent corner radii
+- Moderate internal padding
+- Blue primary action buttons
+- Compact search fields
+- Small status badges
+- Professional data tables
+
+Do not redesign this into a glassmorphism, neomorphism or oversized-card layout.
+
+### KPI Cards
+
+Maintain the screenshot's format:
+
+Icon → Label → Large Numerical Value → Comparison / Supporting Metric
+
+Use blue, green, purple, orange, red and yellow only where the reference indicates meaningful information categories.
+
+KPI cards remain permanently positioned within the page layout.
+
+They are NOT popup cards.
+
+---
+
+# 5. STRICT NO-POPUP-CARD POLICY
+
+This requirement applies across all dashboards.
+
+**Do not create entire pages inside floating popup cards, modal dialogs, overlay windows or temporary drawers.**
+
+Examples of prohibited approaches:
+
+- Clicking Create Shipment opens a large modal containing the full form.
+- Clicking Warehouse Map opens a popup card instead of the real map page.
+- Clicking Customers opens a floating detail card instead of the customer management page.
+- Clicking Reports opens a modal report viewer.
+- Clicking Racks & Bins opens a floating overlay instead of the reference's structured screen.
+- Clicking Billing opens a payment popup replacing the billing page.
+
+Use these patterns instead:
+
+**Primary actions:** Navigate to dedicated full pages.
+
+**Record details:** Use routed detail pages or permanent inline detail panels, following the corresponding screenshot.
+
+**Multi-step forms:** Use full-page forms with visible progress indicators.
+
+**Data filtering:** Use in-page controls.
+
+**Editing:** Use dedicated edit routes or inline editors.
+
+**Confirmations:** Use inline confirmation sections or clearly designated confirmation pages for significant operations.
+
+**Status feedback:** Use inline status messages and validation feedback.
+
+Compact dropdowns required by filters or navigation are acceptable.
+
+KPI cards and permanent information panels visible in the screenshots must remain.
+
+The phrase "no popup cards" must not be misinterpreted as "remove all dashboard cards."
+
+---
+
+# 6. ADMIN DASHBOARD — IMPLEMENT EXACT REFERENCE STRUCTURE
+
+Use `TZLogistics Admin Dashboard Overview(2).png`.
+
+## Admin Overview
+
+Recreate the top row:
+
+- Total Shipments
+- Active Storage
+- In Transit
+- Delivered
+- Pending Actions
+- Revenue
+
+Next reproduce the content structure:
+
+**Upper section**
+
+- Shipments Overview chart
+- Warehouse Capacity chart and utilization breakdown
+- Live Tracking map
+
+**Middle section**
+
+- Storage Bookings summary
+- Recent Invoices
+- Recent Activities
+
+**Lower section**
+
+- Recent Shipments table
+
+Follow the relative proportions, chart placement, tables and visual hierarchy shown in the screenshot.
+
+All numbers must come from actual Convex data.
+
+## Admin Sidebar
+
+Preserve this navigation structure:
+
+### Main
+
+- Dashboard
+
+### Operations
+
+- Shipments
+- Create Shipment
+- Pickup Management
+- Delivery Management
+- Warehouse Management
+  - Warehouses
+  - Storage Bookings
+  - Receiving
+  - Inventory
+  - Warehouse → Shipping
+  - Stock Movements
+  - Storage Rates
+  - Locations & Bins
+- Customers
+- Drivers & Vehicles
+- Routes & Coverage
+
+Integrate Transporter Management into the existing carrier/provider navigation without creating unnecessary duplicate modules.
+
+### Finance
+
+- Quotes & Pricing
+- Invoices & Payments
+- Reports & Analytics
+
+### System
+
+- Users & Permissions
+- Notifications
+- Audit Logs
+- System Settings
+
+Do not remove working navigation items already present in the application.
+
+---
+
+# 7. CUSTOMER DASHBOARD — COMPLETE RECONSTRUCTION
+
+Use:
+
+`SWAHIVO Logistics Customer Dashboard(1).png`
+
+and:
+
+`TZLogistics Operations Dashboard(2).png`
+
+These screenshots define the Customer dashboard's business content and structure.
+
+Recreate the visual styling using the shared Admin design system, while retaining the Customer dashboard's layout, menu and capabilities.
+
+## Customer Overview
+
+Top section:
+
+- Welcome heading
+- Warehouse Storage Booking button
+- Create Shipment button
+
+KPI row:
+
+- Active Storage
+- Total Bookings
+- Active Shipments
+- Delivered
+- Pending Payments
+- Total Spent
+
+Main workspace:
+
+- My Warehouse Inventory
+- Storage Bookings
+- My Shipments
+- Track Your Shipment
+- Recent Invoices
+- Recent Activity
+
+Follow the screenshots' actual table columns, content groupings and card arrangement.
+
+## Customer Sidebar
+
+- Overview
+- Warehouse Bookings
+- My Inventory
+- Request Dispatch
+- My Shipments
+- Create Shipment
+- Track Shipment
+- Payments & Invoices
+- Notifications
+- Support
+- Settings
+
+## Implement Customer Child Pages
+
+### Warehouse Bookings
+
+Full-page booking management.
+
+Provide:
+
+- List of bookings
+- Active/Pending/Completed status filters
+- Booking details
+- New storage booking
+- Warehouse selection
+- Cargo and quantities
+- Dates
+- Storage estimate
+- Booking submission
+- Booking history
+
+Link the booking to existing warehouse receiving operations.
+
+### My Inventory
+
+Display inventory physically received and assigned to the customer.
+
+Use actual package and inventory records.
+
+Show:
+
+- Item
+- Quantity
+- Available
+- Reserved
+- Storage status
+- Warehouse
+- Authorized location information
+- Request Dispatch action
+
+Do not expose confidential internal warehouse layouts to customers unless explicitly permitted.
+
+### Request Dispatch
+
+Create a real shipping/dispatch request from stored inventory.
+
+Required flow:
+
+Select stored inventory → choose quantities → choose destination → shipping details → quote → submit.
+
+Ensure available inventory cannot be dispatched twice.
+
+### My Shipments
+
+Use the existing shipment records and follow the shipment-table design reference.
+
+Provide separate functional filters for shipment states.
+
+### Track Shipment
+
+Allow a customer to enter or select their authorized shipment tracking number.
+
+Show the actual latest status, route milestones, ETA where supported and proof of delivery when available.
+
+Do not simulate GPS.
+
+### Payments & Invoices
+
+Use the Billing reference's styling but filter records to the authenticated customer's account.
+
+Provide invoice viewing, downloads, payment status and genuine available payment workflows.
+
+### Support, Notifications & Settings
+
+Create functional pages using the same reference-based design conventions.
+
+Support case creation, relevant notifications and authorized account settings.
+
+---
+
+# 8. WAREHOUSE MANAGER DASHBOARD — COMPLETE RECONSTRUCTION
+
+Use:
+
+`TZLogistics Warehouse Operations Dashboard(2).png`
+
+This is the Warehouse Dashboard's primary overview reference.
+
+Do not replace it with the Admin Dashboard content.
+
+Use the same overall visual language as Admin, but preserve warehouse-specific controls.
+
+## Warehouse Overview
+
+The top KPI row must follow the reference:
+
+- Total Capacity
+- Occupied
+- Available
+- Expected Arrivals
+- Pending Receiving
+- Awaiting Dispatch
+
+Main content:
+
+- Warehouse Occupancy
+- Inventory by Category
+- Storage Locations visualization
+- Expected Arrivals
+- Pending Receiving
+- Picking Tasks
+- Inventory Overview
+- Dispatch Queue
+- Recent Activity
+
+Use a left sidebar with the reference's hierarchy.
+
+## Warehouse Sidebar
+
+### Dashboard
+
+- Warehouse Dashboard
+
+### Operations
+
+- Storage Bookings
+- Expected Arrivals
+- Goods Receiving
+- Inventory
+- Picking Tasks
+- Packing & Dispatch
+- Warehouse → Shipping
+- Stock Movements
+- Locations & Bins
+
+### Visual Warehouse Tools
+
+Integrate the following without duplicating existing features:
+
+- Warehouse Map
+- Map Designer
+- Racks & Bins
+- Receiving & Putaway
+- QR Labels & Scanner
+- Locate Package
+- Transfers & Picking
+- Cycle Counts
+
+### Management
+
+- Warehouses
+- Storage Rates
+- Customers
+- Employees
+
+### Reports
+
+- Occupancy Report
+- Inventory Report
+- Storage Revenue
+- Activity Logs
+
+Where a tool overlaps with an existing menu item, use an expanded sub-navigation or an integrated page, not two disconnected implementations.
+
+---
+
+# 9. WAREHOUSE CHILD PAGES — FOLLOW EACH SCREENSHOT EXACTLY
+
+These child screenshots are individually authoritative.
+
+## A. Warehouse Map Designer
+
+Reference:
+
+`Warehouse Map Designer Dashboard(1).png`
+
+Reconstruct:
+
+- Horizontal drawing toolbar
+- Interactive floor-plan canvas
+- Dimension indicators
+- Select, Pan, Wall, Door, Rack, Zone, Aisle and Shape tools
+- Undo/Redo
+- Grid toggle
+- Zoom controls
+- Save Draft
+- Publish Map
+- Right-side Selected Element inspector
+- Layer Manager
+- Floor selector and thumbnails
+- Map legend
+
+Use `react-konva`.
+
+The canvas must be interactive.
+
+Users must be able to place and configure real storage racks and zones.
+
+Persist editable map geometry in Convex.
+
+Do not use the screenshot as a static background pretending to be an editor.
+
+## B. Racks & Bins
+
+Reference:
+
+`Warehouse Racks & Bins Dashboard(1).png`
+
+Reconstruct:
+
+**Top**
+
+- Total Racks
+- Total Bins
+- Occupied Bins
+- Available Bins
+- Blocked Bins
+
+**Left**
+
+Rack list with occupancy indicators.
+
+**Center**
+
+Selected Rack view showing individual shelf levels and bins.
+
+**Right**
+
+- Bin Details
+- Packages in This Bin
+- Bin Capacity
+- Quick Actions
+
+**Bottom**
+
+All Bins in Selected Rack table.
+
+Support actual rack creation, editing and location selection.
+
+A selected bin must correspond to a real Convex storage-location record.
+
+## C. Receiving & Putaway
+
+Reference:
+
+`SWAHIVO Warehouse Receiving Dashboard(1).png`
+
+Preserve the complete workflow:
+
+1. Receive Packages
+2. Print Labels
+3. Assign Storage
+4. Scan & Putaway
+5. Complete
+
+Keep the receiving form, generated-package list, QR scanner, floor map, shelf view and receiving table in their corresponding screenshot positions.
+
+Connect receiving to actual bookings and shipment records.
+
+A package must not become Stored merely because a location was selected.
+
+Require authorized physical putaway confirmation.
+
+## D. QR Labels & Scanner
+
+Reference:
+
+`Warehouse QR Labels Dashboard(1).png`
+
+Recreate:
+
+- Label Generator
+- Scan Package
+- Scan Location
+- Scan History
+- Print Queue
+- Label Templates
+- Settings
+
+Maintain the screenshot's three primary sections:
+
+- Label type and settings
+- Package/location selection and print actions
+- Label preview and scanner
+
+Use:
+
+- `qrcode`
+- `@zxing/browser`
+- `react-to-print`
+
+Generate genuine QR data, not decorative placeholders.
+
+QR scanning must retrieve the correct authenticated backend record.
+
+The QR code should identify the canonical package or location rather than embedding private customer data.
+
+## E. Locate Package
+
+Reference:
+
+`SWAHIVO Warehouse Package Locator Dashboard(1).png`
+
+Recreate:
+
+- Search toolbar
+- Warehouse/floor selectors
+- Top KPI cards
+- Main interactive warehouse map
+- Highlighted package location
+- Package Details panel
+- Rack R05 / shelf view equivalent
+- Search Results table
+
+When the user searches for a real package, load its last confirmed location from Convex.
+
+Highlight the appropriate rack, shelf and bin.
+
+Example:
+
+`PKG-1042 → WH001-A-R05-L02-B03`
+
+Treat this identifier as sample content only; do not hardcode it into production search results.
+
+## F. Transfers & Picking
+
+Reference:
+
+`Warehouse Transfers & Picking Dashboard(1).png`
+
+Recreate:
+
+- Pending Picks
+- In Picking
+- Ready for Dispatch
+- Internal Transfers
+- Completed Today
+
+Provide the two main workflow tabs:
+
+- Picking (Outbound)
+- Internal Transfer
+
+Preserve:
+
+- Select Pick List
+- Pick Locations on Warehouse Map
+- Current Pick Item
+- Pick Actions
+- Scan to Confirm Pick
+- Pick List Items table
+
+Use real package records, scan verification and authorized status transitions.
+
+Do not let a package be picked twice.
+
+## G. Cycle Counts
+
+Reference:
+
+`Warehouse Cycle Count Dashboard(1).png`
+
+Recreate:
+
+- Total Locations
+- Counted
+- Pending
+- Discrepancies
+- Active Count
+
+Tabs:
+
+- Overview
+- Active Count
+- Location List
+- Discrepancies
+- History
+
+Main content:
+
+- Warehouse Floor Map
+- Location Status
+- Progress
+- Quick Filters
+- QR Scanner
+- Cycle Count Lists
+- Count Summary
+- Recent Discrepancies
+
+Integrate real inventory verification.
+
+Missing or mismatched packages must produce reviewable discrepancies rather than silently changing inventory records.
+
+## H. Warehouse Reports
+
+Reference:
+
+`Swahivo Logistics Reports Dashboard(1).png`
+
+Recreate:
+
+- Warehouse Overview
+- Inventory Report
+- Location Utilization
+- Movement Report
+- Cycle Count Report
+- Aging Report
+- Custom Report
+
+Include the same chart and table arrangement:
+
+- Inventory Status
+- Storage Capacity Utilization
+- Package Movements
+- Top Storage Locations
+- Package Type Distribution
+- Aging Report
+- Recent Warehouse Activities
+
+Use real Convex data and appropriate chart libraries.
+
+---
+
+# 10. DRIVER DASHBOARD — COMPLETE RECONSTRUCTION
+
+Use:
+
+`TZLogistics Driver Dashboard(2).png`
+
+This is the Driver dashboard's main visual reference.
+
+Follow the common Admin-style visual system while maintaining a driving-focused workflow.
+
+## Driver Overview
+
+Preserve:
+
+- Greeting and current assigned-work summary
+- Start Navigation action
+- My Assignments
+- Scheduled Today
+- In Transit
+- Completed
+- Issues
+- Total Distance
+
+Main content:
+
+- Today's Route
+- Route Stops
+- Current Assignment
+- My Assignments table
+- Shipment Timeline
+
+The geographic map is central to the Driver experience.
+
+Do not replace it with a generic chart.
+
+## Driver Sidebar
+
+- Dashboard
+- My Assignments
+- Scheduled Pickups
+- Active Shipments
+- Deliveries
+- Scan Package
+- Delivery Confirmation
+- Trip History
+- Notifications
+- Profile
+
+## Build All Driver Child Pages
+
+For pages without an individual supplied reference, derive their UI structure from the Driver Overview and corresponding Shipment, Transfer, and QR Scanner references.
+
+### My Assignments
+
+Use the existing assignments data.
+
+Provide:
+
+- Assigned pickups
+- Assigned deliveries
+- Scheduled date/time
+- Customer and location
+- Cargo details
+- Current status
+- Start/continue action
+- Assignment detail page
+
+### Scheduled Pickups
+
+Display pickup tasks and scheduled windows.
+
+Clicking an assignment opens a full detail page containing the customer address, cargo, verification instructions and permitted actions.
+
+### Active Shipments
+
+Show active trips assigned to the authenticated driver.
+
+Display current status, stops, route milestones and location reporting availability.
+
+### Deliveries
+
+Show deliveries requiring action.
+
+Allow authorized arrival, handoff and exception reporting.
+
+### Scan Package
+
+Reuse the actual QR scanner implementation.
+
+A scan must identify a real package assigned to the applicable driver's task.
+
+### Delivery Confirmation
+
+Provide electronic proof of delivery:
+
+- Recipient name
+- Delivery timestamp
+- Photo evidence where allowed
+- Signature capture
+- Notes
+- Final confirmation
+
+Preserve actual delivery records and audit events.
+
+### Trip History
+
+Display completed trips with actual distances when available, completion dates, shipment references and documented exceptions.
+
+### Notifications and Profile
+
+Provide working role-appropriate screens.
+
+### Mobile Requirements
+
+The Driver dashboard must be highly usable on mobile.
+
+Keep:
+
+- Clear navigation
+- Large enough touch targets
+- Readable assignment details
+- Accessible scanner
+- Visible delivery action controls
+- Network-error handling
+- Accurate location permission status
+
+Do not show invented vehicle movement, trip distance or GPS accuracy.
+
+---
+
+# 11. SHIPMENTS — IMPLEMENT SHARED REFERENCE
+
+Reference:
+
+`SWAHIVO Logistics Shipment Dashboard(1).png`
+
+Implement the supplied design with:
+
+- Shipment KPI cards
+- All Shipments status tabs
+- Search/filter controls
+- Shipment table
+- Shipment Details panel
+- Shipment Timeline
+- Tracking Map
+- Items
+- Cost & Payment
+- Related Shipments
+- Quick Actions
+
+Status tabs must query the corresponding records.
+
+For example, the Delivered tab must show only shipments with the appropriate actual delivered status.
+
+Do not show the same shipments for Pending Pickup, In Transit, Out for Delivery and Delivered.
+
+## Create Shipment
+
+Reference:
+
+`SWAHIVO Shipment Creation Dashboard(1).png`
+
+Reconstruct the five-step workflow:
+
+1. Shipment Details
+2. Pickup & Delivery
+3. Packages & Items
+4. Services & Payment
+5. Review & Submit
+
+Use a full-page form.
+
+Maintain the screenshot's multi-column form and right-side summary.
+
+Support:
+
+- Standard Shipping
+- Storage + Shipping
+
+Both service types must use the same underlying shipment infrastructure where appropriate.
+
+**Standard Shipping** must not require a warehouse storage booking.
+
+**Storage + Shipping** must link to real warehouse booking and inventory workflows.
+
+Use actual customers, pickup/delivery locations, package details, service pricing and available carriers.
+
+Do not preselect a fictional driver or vehicle.
+
+---
+
+# 12. CUSTOMER CRM, TRANSPORTERS, BILLING & REPORTS
+
+These are shared enterprise modules.
+
+Reconstruct them using their individual reference images, then enforce role-based data access.
+
+## Customer Management
+
+Use the provided Customers CRM design where available.
+
+Include:
+
+- Customer summary KPIs
+- Customer type/status filters
+- Customer table
+- Selected Customer Details
+- Customer shipments
+- Storage
+- Billing
+- Notes
+- Customer analytics
+
+Use real saved customer records.
+
+## Transporter Management
+
+Reference:
+
+`Transporter Management Dashboard(1).png`
+
+Implement:
+
+- Total Transporters
+- Active Transporters
+- Total Drivers
+- Total Vehicles
+- On Deliveries
+- Transporter list
+- Region filters
+- Coverage map
+- Transporter Details
+- Vehicles
+- Drivers
+- Assignments
+- Documents
+- Performance
+
+Respect provider ownership and organization access.
+
+## Billing
+
+Reference:
+
+`SWAHIVO Billing Dashboard Overview(1).png`
+
+Recreate:
+
+- Total Invoiced
+- Paid
+- Pending Payment
+- Overdue
+- Total Invoices
+- Revenue Overview
+- Revenue by Service
+- Invoice List
+- Invoice Preview
+- Payment Information
+
+Tabs:
+
+- Invoices
+- Payments
+- Quotes
+- Credit Notes
+- Price List
+- Usage & Charges
+- Settings
+
+Support authorized invoice creation, actual payment records and correctly calculated statuses.
+
+Use real finance entries. Do not mark payments successful before actual verification or authorized manual reconciliation.
+
+## Shared Analytics
+
+Follow the Warehouse Reports reference for visual style where there is no more specific screenshot.
+
+Allow each role to see only appropriate information.
+
+Customer financial reports must not expose other customers.
+
+Warehouse managers see operational warehouse reports.
+
+Administrators see the broader organization reports they are authorized to access.
+
+---
+
+# 13. PRESERVE THE PUBLIC LANDING PAGE
+
+Reference:
+
+`TZLogistics Warehouse & Shipping Platform(2).png`
+
+This is a deliberate exception to the dashboard styling.
+
+Maintain its separate public website composition.
+
+Preserve:
+
+- Main navigation
+- Hero area with logistics imagery
+- Warehouse + Shipping service cards
+- Shipping Only service card
+- Shipment tracking search
+- Book Warehouse Storage
+- Request Shipping
+- How It Works section
+- Public business information
+
+Keep the established Swahivo branding and approved marketing copy.
+
+Do not replace the marketing landing page with the Admin sidebar layout.
+
+Connect public CTAs to the correct real application workflows.
+
+---
+
+# 14. CROSS-DASHBOARD BUSINESS INTEGRATION
+
+All four dashboards must share real backend records.
+
+Do not create isolated, unrelated applications for Admin, Customer, Warehouse and Driver.
+
+## Workflow A — Customer Books Storage
+
+1. Customer opens Warehouse Bookings.
+2. Customer selects a warehouse and submits a real booking.
+3. Booking becomes visible to authorized Admin and Warehouse users.
+4. Warehouse Manager reviews the booking.
+5. Warehouse staff receive the physical packages.
+6. Inventory records are created or linked correctly.
+7. Staff assign verified rack/bin storage locations.
+8. Customer's My Inventory updates from the same records.
+
+## Workflow B — Warehouse Putaway
+
+1. Warehouse staff identify a received package.
+2. Print its genuine QR label.
+3. Choose an eligible storage location.
+4. Scan package and bin codes.
+5. Confirm physical placement.
+6. Update actual storage occupancy.
+7. Make the package searchable on the map.
+8. Update authorized inventory views and audit history.
+
+## Workflow C — Customer Requests Dispatch
+
+1. Customer selects stored inventory.
+2. Customer creates a dispatch request.
+3. Warehouse receives a picking task.
+4. Staff locate packages using the map.
+5. Staff verify picking.
+6. Packages move to the correct dispatch state.
+7. Existing shipment management receives the handoff.
+8. A driver is assigned by authorized operations staff.
+
+## Workflow D — Driver Delivery
+
+1. Dispatcher assigns a legitimate shipment.
+2. Driver sees it in My Assignments.
+3. Driver performs permitted pickup confirmation.
+4. Shipment status updates for Admin and Customer.
+5. Driver progresses through authorized delivery milestones.
+6. Driver records proof of delivery.
+7. Shipment appears in Delivered views.
+8. Customer and Admin see the final delivery status.
+9. Finance receives the appropriate billable milestone.
+
+## Workflow E — Billing
+
+1. Storage or shipping generates valid billable charges.
+2. Authorized invoice creation uses actual business and customer data.
+3. The invoice appears in the correct customer account.
+4. A real payment or approved manual payment verification updates its status.
+5. Admin financial reporting updates.
+6. Applicable business restrictions are enforced according to actual payment and contract rules.
+
+**All five workflows must reference shared Convex data.**
+
+---
+
+# 15. ROLE-BASED ACCESS CONTROL
+
+Preserve existing authentication and membership models.
+
+Apply secure backend permissions.
+
+| Feature | Admin | Customer | Warehouse | Driver |
+|---|---|---|---|---|
+| Organization overview | Authorized | Own account | Assigned warehouse | Assigned work |
+| Create shipment | Authorized | Own account | If permitted | No |
+| Manage storage booking | Authorized | Own booking | Operational processing | No |
+| Draw warehouse map | Authorized | No | Manager only | No |
+| Receive packages | Authorized | No | Authorized staff | No |
+| Putaway / Move inventory | Authorized | No | Authorized staff | No |
+| Assign driver | Authorized | No | If delegated | No |
+| Confirm assigned pickup | Oversight | No | Warehouse handoff | Assigned driver |
+| Confirm delivery | Oversight | No | Handoff only | Assigned driver |
+| View invoices | Authorized | Own invoices | Permitted operational scope | Only if explicitly allowed |
+| Manage pricing/settings | Authorized | No | Delegated only | No |
+
+Enforce all sensitive read and write restrictions inside Convex functions.
+
+Frontend hiding is not sufficient authorization.
+
+Do not use mock admin logins or hardcoded preset roles.
+
+---
+
+# 16. REAL BACKEND AND DATA REQUIREMENTS
+
+All operational UI components must connect to real Convex queries and mutations.
+
+This includes:
+
+- KPIs
+- Charts
+- Tables
+- Search
+- Filters
+- Notifications
+- Booking data
+- Shipment data
+- Inventory
+- Driver assignments
+- Storage locations
+- QR scan results
+- Invoice totals
+- Revenue analytics
+- Payment statuses
+- Activity timelines
+
+When no records exist, display a proper empty state.
+
+Do not populate production dashboards with fabricated shipment totals or example customer information.
+
+Use loading skeletons while data is loading.
+
+Show genuine errors when backend operations fail.
+
+Do not silently report successful mutations when Convex rejects them.
+
+All date, currency, weight, status and quantity values must be formatted consistently.
+
+---
+
+# 17. VISUAL FIDELITY ENFORCEMENT
+
+You must perform a screenshot-based visual comparison.
+
+For each reference page:
+
+1. Identify the matching implemented route.
+2. Render the page at the same desktop viewport dimensions as the reference, approximately 1536 × 1024.
+3. Capture a screenshot of the implemented page.
+4. Compare it to the supplied reference.
+5. Inspect differences in:
+   - Sidebar dimensions
+   - Header dimensions
+   - Page margins
+   - Card positions
+   - Grid structure
+   - Chart sizing
+   - Table widths
+   - Row heights
+   - Fonts
+   - Color usage
+   - Status badges
+   - Buttons
+   - Maps
+   - Panel alignment
+6. Correct visible mismatches.
+7. Repeat until major layout differences are resolved.
+
+Use Playwright screenshots if available.
+
+Use screenshot comparison tooling where practical. Pixel-difference tools are useful, but dynamic maps, fonts and real data can create irrelevant differences; prioritize structural and visual accuracy.
+
+Do not claim pixel-perfect matching without conducting the comparison.
+
+## Visual Acceptance Rules
+
+A page fails visual review when:
+
+- A major reference section is absent.
+- The sidebar layout differs substantially.
+- The page hierarchy has been changed.
+- A table is replaced by cards without permission.
+- A permanent reference panel is moved into a modal.
+- Charts are omitted.
+- The map is replaced by a decorative image.
+- Important controls are missing.
+- The layout uses unrelated styling.
+- A child page is replaced by the dashboard overview.
+- The implementation ignores its assigned reference screenshot.
+
+Real production data can change text and chart content, but must not arbitrarily alter the visual composition.
+
+---
+
+# 18. RESPONSIVE DESIGN
+
+The screenshots primarily define the desktop experience.
+
+Desktop is the authoritative layout.
+
+For tablet and mobile, adapt the same design rather than inventing a new design language.
+
+## Desktop
+
+Preserve the screenshot's full sidebar and content grid.
+
+## Tablet
+
+Use responsive columns and a collapsible sidebar.
+
+Keep the primary content and operation controls accessible.
+
+## Mobile
+
+Use:
+
+- Collapsible navigation
+- Single-column sections where appropriate
+- Touch-friendly forms
+- Scrollable data tables when necessary
+- Full-page task views
+- Accessible scanner interface
+- Clear primary actions
+
+Do not hide critical operational actions just to simplify the mobile screen.
+
+The Driver portal and Warehouse scanning workflows must be especially mobile-friendly.
+
+---
+
+# 19. MANDATORY IMPLEMENTATION ORDER
+
+Do not attempt to generate every page with generic templates in one pass.
+
+Work in controlled stages.
+
+### Phase 0 — Audit
+
+Inspect the existing codebase, routes, backend and all supplied screenshots.
+
+Produce the actual page-to-reference mapping and identify missing functionality.
+
+### Phase 1 — Shared Design System
+
+Align the existing reusable components with the Admin master reference.
+
+Implement or refine:
+
+- Dashboard shell
+- Sidebar
+- Header
+- KPI cards
+- Data tables
+- Status badges
+- Chart containers
+- Search/filter controls
+- Buttons
+- Tabs
+- Detail panels
+- Empty/loading/error states
+
+Do not break existing working pages.
+
+### Phase 2 — Admin Dashboard
+
+Reconstruct the Admin Overview and required Admin child pages using the respective screenshots.
+
+Verify the interface.
+
+### Phase 3 — Customer Dashboard
+
+Reconstruct the Customer Overview and all customer child pages.
+
+Verify booking, inventory, shipping, tracking and billing workflows.
+
+### Phase 4 — Warehouse Dashboard
+
+Reconstruct the Warehouse Overview and all reference-based warehouse child pages.
+
+Implement functional maps, locations, QR labels, receiving, putaway, picking and reporting.
+
+### Phase 5 — Driver Dashboard
+
+Reconstruct the Driver Overview and all driver child pages.
+
+Verify assignment, pickup, delivery and proof-of-delivery workflows.
+
+### Phase 6 — Cross-Role Integration
+
+Verify that actions performed by one role correctly update the records visible to other authorized roles.
+
+### Phase 7 — Responsive and Visual QA
+
+Compare implemented screenshots to the uploaded references, test desktop/mobile and repair layout discrepancies.
+
+### Phase 8 — Production Readiness
+
+Run authentication, authorization, operational, regression, and deployment-readiness checks.
+
+---
+
+# 20. MANDATORY TESTING
+
+At minimum, verify:
+
+- Admin can navigate to every authorized child page.
+- Customer can complete storage booking and shipment workflows.
+- Warehouse receives the resulting operational records.
+- Warehouse managers can draw and save real maps.
+- Staff can assign a package to an actual storage location.
+- Genuine QR generation and decoding work.
+- Package search highlights the correct stored location.
+- Authorized drivers receive assigned work.
+- Driver pickup and delivery updates propagate correctly.
+- Billing is connected to legitimate operational records.
+- Filters and tabs return different appropriate datasets.
+- Refreshing pages preserves real backend data.
+- Unauthorized access to other organizations is rejected.
+- The existing landing page is not damaged.
+- No major page depends on demo data.
+- No primary workflow has been replaced by popup cards.
+- Implemented screenshots structurally match their corresponding reference images.
+
+Perform suitable unit, integration and end-to-end tests.
+
+Report tests actually executed and distinguish passing, failing, blocked and not-run cases.
+
+---
+
+# 21. FINAL IMPLEMENTATION REPORT
+
+When finished, provide a structured report:
+
+| Field | Required information |
+|---|---|
+| Dashboard | Admin / Customer / Warehouse / Driver |
+| Page | Actual implemented page |
+| Reference | Exact uploaded screenshot |
+| Route | Existing or implemented route |
+| UI Fidelity | Pass / Issues / Not Reviewed |
+| Frontend Functionality | Working / Partial / Blocked |
+| Convex Integration | Verified / Not Verified |
+| Authorization | Tested / Not Tested |
+| Responsive Design | Tested / Not Tested |
+| Remaining Issues | Specific details |
+
+Do not mark an item complete solely because a component renders.
+
+---
+
+# 22. ABSOLUTE FINAL DIRECTIVE
+
+**THE ATTACHED SCREENSHOTS ARE THE DESIGN AUTHORITY.**
+
+Your job is to reproduce and implement them.
+
+The Admin Overview screenshot defines the main dashboard design conventions.
+
+The Customer, Warehouse and Driver screenshots define their respective overview layouts and role-specific functionality.
+
+The detailed Swahivo child-page screenshots define the exact page structures for shipments, receiving, racks, QR labels, package location, transfers, cycle counts, reports, transporters and billing.
+
+Where a screenshot is available, follow it closely.
+
+Where a screenshot is missing, derive the page from the closest existing reference without changing the established structure or design language.
+
+Use dedicated full pages and permanent inline sections, not floating popup-card workflows.
+
+Preserve the existing Vite, React, TypeScript, Tailwind CSS, shadcn/ui and Convex architecture.
+
+Connect every applicable feature to real backend functionality.
+
+Do not invent placeholder data as real operational records.
+
+Do not use fake QR codes or simulated tracking.
+
+Do not simplify or discard business workflows.
+
+**RECONSTRUCT THE UI. PRESERVE THE ARCHITECTURE. CONNECT THE FEATURES. VERIFY THE RESULTS.**
+
+Begin with a complete existing-project and screenshot-reference audit, then implement each dashboard and its child pages according to the instructions above.

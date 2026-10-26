@@ -1,0 +1,11 @@
+{
+  "name": "SWAHIVO Logistics OS",
+  "description": "Production-grade enterprise logistics management operating system for warehousing, shipping, inventory, QR tracking, fleet dispatch, driver telematics, and billing in Tanzania and East Africa.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
