@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useAppStore } from '@/lib/store-context';
 import {
   LayoutDashboard,
@@ -31,6 +32,15 @@ import {
   ShieldCheck,
   Building2,
   Box,
+  MapPin,
+  ClipboardList,
+  DollarSign,
+  UserCheck,
+  Bell,
+  Activity,
+  Layers,
+  ArrowRightLeft,
+  LifeBuoy,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -43,14 +53,15 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
   const activeTab = propActiveTab || store.activeTab;
   const setActiveTab = propSetActiveTab || store.setActiveTab;
   const { currentRole, setCurrentRole } = store;
+
   const [warehouseOpen, setWarehouseOpen] = useState(true);
-  const [shipmentsOpen, setShipmentsOpen] = useState(true);
+  const [financeOpen, setFinanceOpen] = useState(true);
+  const [visualToolsOpen, setVisualToolsOpen] = useState(true);
 
-
-  // Common item class
+  // Styling helpers
   const getItemClasses = (tabId: string) => {
     const isActive = activeTab === tabId;
-    return `group flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+    return `group flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition-all ${
       isActive
         ? 'bg-blue-600 text-white font-semibold shadow-xs'
         : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
@@ -59,7 +70,7 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
 
   const getSubItemClasses = (tabId: string) => {
     const isActive = activeTab === tabId;
-    return `flex items-center gap-2 rounded-md py-1.5 pl-8 pr-3 text-xs transition-colors ${
+    return `flex w-full items-center gap-2 rounded-md py-1.5 pl-8 pr-3 text-xs transition-colors ${
       isActive
         ? 'bg-blue-600/90 text-white font-semibold'
         : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
@@ -68,22 +79,28 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 flex w-[235px] flex-col bg-[#0b132b] text-white select-none">
-      {/* Brand Header */}
-      <div className="flex h-16 items-center gap-3 border-b border-slate-800/80 px-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs">
-          <Box className="h-5 w-5" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-extrabold tracking-wider text-white">SWAHIVO</span>
-          <span className="text-[10px] font-medium text-blue-400 -mt-1 tracking-wider uppercase">
-            Logistics OS
-          </span>
-        </div>
+      {/* Brand Header with Authentic SWAHIVO Light Logo */}
+      <div className="flex h-16 items-center border-b border-slate-800/80 px-4">
+        <button
+          onClick={() => {
+            setCurrentRole('landing');
+          }}
+          className="relative h-8 w-44 hover:opacity-90 transition text-left"
+          title="Return to Public Landing Page"
+        >
+          <Image
+            src="/assets/aistudio/light_bd56867f.png"
+            alt="SWAHIVO Logistics OS"
+            fill
+            className="object-contain object-left"
+            priority
+          />
+        </button>
       </div>
 
       {/* Role Indicator Bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-900/60 border-b border-slate-800/60 text-[11px] text-slate-400">
-        <span className="truncate">
+      <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800/60 text-[11px] text-slate-300">
+        <span className="font-semibold truncate">
           {currentRole === 'admin' && 'Admin Workspace'}
           {currentRole === 'warehouse_manager' && 'Warehouse Facility'}
           {currentRole === 'customer' && 'Customer Portal'}
@@ -91,9 +108,13 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
           {currentRole === 'landing' && 'Public Website'}
         </span>
         <button
-          onClick={() => setCurrentRole(currentRole === 'admin' ? 'warehouse_manager' : currentRole === 'warehouse_manager' ? 'customer' : currentRole === 'customer' ? 'driver' : 'admin')}
-          className="text-blue-400 hover:text-blue-300 text-[10px] underline font-medium"
-          title="Switch view"
+          onClick={() => {
+            if (currentRole === 'admin') setCurrentRole('warehouse_manager');
+            else if (currentRole === 'warehouse_manager') setCurrentRole('customer');
+            else if (currentRole === 'customer') setCurrentRole('driver');
+            else setCurrentRole('admin');
+          }}
+          className="text-blue-400 hover:text-blue-300 text-[10px] font-bold underline transition"
         >
           Switch
         </button>
@@ -101,45 +122,55 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
 
       {/* Navigation Links (Scrollable) */}
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
-        {/* ================= ADMIN NAVIGATION ================= */}
+        {/* ========================================================= */}
+        {/* ================= ADMIN NAVIGATION ====================== */}
+        {/* ========================================================= */}
         {currentRole === 'admin' && (
           <>
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={getItemClasses('dashboard')}
-            >
+            <div className="pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              MAIN
+            </div>
+
+            <button onClick={() => setActiveTab('dashboard')} className={getItemClasses('dashboard')}>
               <div className="flex items-center gap-2.5">
                 <LayoutDashboard className="h-4 w-4" />
                 <span>Dashboard</span>
               </div>
             </button>
 
-            {/* Shipments Menu Group */}
-            <div>
-              <button
-                onClick={() => setShipmentsOpen(!shipmentsOpen)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800/60"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Package className="h-4 w-4" />
-                  <span>Shipments</span>
-                </div>
-                {shipmentsOpen ? <ChevronDown className="h-3 w-3 text-slate-400" /> : <ChevronRight className="h-3 w-3 text-slate-400" />}
-              </button>
-
-              {shipmentsOpen && (
-                <div className="mt-1 space-y-0.5">
-                  <button onClick={() => setActiveTab('shipments')} className={getSubItemClasses('shipments')}>
-                    <span>All Shipments</span>
-                  </button>
-                  <button onClick={() => setActiveTab('create-shipment')} className={getSubItemClasses('create-shipment')}>
-                    <span>Create Shipment</span>
-                  </button>
-                </div>
-              )}
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              OPERATIONS
             </div>
 
-            {/* Warehouse Management Group */}
+            <button onClick={() => setActiveTab('shipments')} className={getItemClasses('shipments')}>
+              <div className="flex items-center gap-2.5">
+                <Package className="h-4 w-4" />
+                <span>Shipments</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('create-shipment')} className={getItemClasses('create-shipment')}>
+              <div className="flex items-center gap-2.5">
+                <PlusCircle className="h-4 w-4" />
+                <span>Create Shipment</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('pickup-management')} className={getItemClasses('pickup-management')}>
+              <div className="flex items-center gap-2.5">
+                <Send className="h-4 w-4" />
+                <span>Pickup Management</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('delivery-management')} className={getItemClasses('delivery-management')}>
+              <div className="flex items-center gap-2.5">
+                <Truck className="h-4 w-4" />
+                <span>Delivery Management</span>
+              </div>
+            </button>
+
+            {/* Warehouse Management Accordion */}
             <div>
               <button
                 onClick={() => setWarehouseOpen(!warehouseOpen)}
@@ -147,7 +178,7 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               >
                 <div className="flex items-center gap-2.5">
                   <Warehouse className="h-4 w-4" />
-                  <span>Warehouse</span>
+                  <span>Warehouse Management</span>
                 </div>
                 {warehouseOpen ? <ChevronDown className="h-3 w-3 text-slate-400" /> : <ChevronRight className="h-3 w-3 text-slate-400" />}
               </button>
@@ -155,31 +186,28 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               {warehouseOpen && (
                 <div className="mt-1 space-y-0.5">
                   <button onClick={() => setActiveTab('warehouse-overview')} className={getSubItemClasses('warehouse-overview')}>
-                    <span>Overview</span>
+                    <span>Warehouses</span>
                   </button>
-                  <button onClick={() => setActiveTab('warehouse-map-designer')} className={getSubItemClasses('warehouse-map-designer')}>
-                    <span>Map Designer</span>
-                  </button>
-                  <button onClick={() => setActiveTab('warehouse-racks-bins')} className={getSubItemClasses('warehouse-racks-bins')}>
-                    <span>Racks & Bins</span>
+                  <button onClick={() => setActiveTab('warehouse-bookings')} className={getSubItemClasses('warehouse-bookings')}>
+                    <span>Storage Bookings</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-receiving')} className={getSubItemClasses('warehouse-receiving')}>
-                    <span>Receiving & Putaway</span>
+                    <span>Receiving</span>
                   </button>
-                  <button onClick={() => setActiveTab('warehouse-qr-labels')} className={getSubItemClasses('warehouse-qr-labels')}>
-                    <span>QR Labels & Scanner</span>
-                  </button>
-                  <button onClick={() => setActiveTab('warehouse-locate-package')} className={getSubItemClasses('warehouse-locate-package')}>
-                    <span>Locate Package</span>
+                  <button onClick={() => setActiveTab('warehouse-overview')} className={getSubItemClasses('warehouse-inventory')}>
+                    <span>Inventory</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getSubItemClasses('warehouse-transfers-picking')}>
-                    <span>Transfers & Picking</span>
+                    <span>Warehouse &rarr; Shipping</span>
                   </button>
-                  <button onClick={() => setActiveTab('warehouse-cycle-counts')} className={getSubItemClasses('warehouse-cycle-counts')}>
-                    <span>Cycle Counts</span>
+                  <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getSubItemClasses('warehouse-movements')}>
+                    <span>Stock Movements</span>
                   </button>
-                  <button onClick={() => setActiveTab('warehouse-reports')} className={getSubItemClasses('warehouse-reports')}>
-                    <span>Reports</span>
+                  <button onClick={() => setActiveTab('billing')} className={getSubItemClasses('warehouse-rates')}>
+                    <span>Storage Rates</span>
+                  </button>
+                  <button onClick={() => setActiveTab('warehouse-racks-bins')} className={getSubItemClasses('warehouse-racks-bins')}>
+                    <span>Locations &amp; Bins</span>
                   </button>
                 </div>
               )}
@@ -195,34 +223,79 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
             <button onClick={() => setActiveTab('transporters')} className={getItemClasses('transporters')}>
               <div className="flex items-center gap-2.5">
                 <Truck className="h-4 w-4" />
-                <span>Transporters</span>
+                <span>Drivers &amp; Vehicles</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('transporters')} className={getItemClasses('routes-coverage')}>
+              <div className="flex items-center gap-2.5">
+                <MapPin className="h-4 w-4" />
+                <span>Routes &amp; Coverage</span>
+              </div>
+            </button>
+
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              FINANCE
+            </div>
+
+            <button onClick={() => setActiveTab('billing')} className={getItemClasses('quotes-pricing')}>
+              <div className="flex items-center gap-2.5">
+                <FileText className="h-4 w-4" />
+                <span>Quotes &amp; Pricing</span>
               </div>
             </button>
 
             <button onClick={() => setActiveTab('billing')} className={getItemClasses('billing')}>
               <div className="flex items-center gap-2.5">
                 <CreditCard className="h-4 w-4" />
-                <span>Billing</span>
+                <span>Invoices &amp; Payments</span>
               </div>
             </button>
 
             <button onClick={() => setActiveTab('analytics')} className={getItemClasses('analytics')}>
               <div className="flex items-center gap-2.5">
                 <BarChart3 className="h-4 w-4" />
-                <span>Analytics</span>
+                <span>Reports &amp; Analytics</span>
+              </div>
+            </button>
+
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              SYSTEM
+            </div>
+
+            <button onClick={() => setActiveTab('customers')} className={getItemClasses('users-permissions')}>
+              <div className="flex items-center gap-2.5">
+                <UserCheck className="h-4 w-4" />
+                <span>Users &amp; Permissions</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('notifications')} className={getItemClasses('notifications')}>
+              <div className="flex items-center gap-2.5">
+                <Bell className="h-4 w-4" />
+                <span>Notifications</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('analytics')} className={getItemClasses('audit-logs')}>
+              <div className="flex items-center gap-2.5">
+                <Activity className="h-4 w-4" />
+                <span>Audit Logs</span>
               </div>
             </button>
 
             <button onClick={() => setActiveTab('settings')} className={getItemClasses('settings')}>
               <div className="flex items-center gap-2.5">
                 <Settings className="h-4 w-4" />
-                <span>Settings</span>
+                <span>System Settings</span>
               </div>
             </button>
           </>
         )}
 
-        {/* ================= WAREHOUSE MANAGER NAVIGATION ================= */}
+        {/* ========================================================= */}
+        {/* ============= WAREHOUSE MANAGER NAVIGATION ============== */}
+        {/* ========================================================= */}
         {currentRole === 'warehouse_manager' && (
           <>
             <button onClick={() => setActiveTab('warehouse-overview')} className={getItemClasses('warehouse-overview')}>
@@ -232,28 +305,115 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               </div>
             </button>
 
-            <div className="pt-2 pb-1 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
               OPERATIONS
             </div>
+
+            <button onClick={() => setActiveTab('warehouse-bookings')} className={getItemClasses('warehouse-bookings')}>
+              <div className="flex items-center gap-2.5">
+                <Boxes className="h-4 w-4" />
+                <span>Storage Bookings</span>
+              </div>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                12
+              </span>
+            </button>
 
             <button onClick={() => setActiveTab('warehouse-receiving')} className={getItemClasses('warehouse-receiving')}>
               <div className="flex items-center gap-2.5">
                 <Download className="h-4 w-4" />
-                <span>Receiving & Putaway</span>
+                <span>Expected Arrivals</span>
               </div>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                5
+              </span>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-receiving')} className={getItemClasses('warehouse-receiving-putaway')}>
+              <div className="flex items-center gap-2.5">
+                <Download className="h-4 w-4" />
+                <span>Goods Receiving</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-overview')} className={getItemClasses('warehouse-inventory')}>
+              <div className="flex items-center gap-2.5">
+                <Boxes className="h-4 w-4" />
+                <span>Inventory</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-transfers-picking')}>
+              <div className="flex items-center gap-2.5">
+                <Repeat className="h-4 w-4" />
+                <span>Picking Tasks</span>
+              </div>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                8
+              </span>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-dispatch')}>
+              <div className="flex items-center gap-2.5">
+                <Truck className="h-4 w-4" />
+                <span>Packing &amp; Dispatch</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-shipping-handoff')}>
+              <div className="flex items-center gap-2.5">
+                <ArrowRightLeft className="h-4 w-4" />
+                <span>Warehouse &rarr; Shipping</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-movements')}>
+              <div className="flex items-center gap-2.5">
+                <Repeat className="h-4 w-4" />
+                <span>Stock Movements</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-racks-bins')} className={getItemClasses('warehouse-locations-bins')}>
+              <div className="flex items-center gap-2.5">
+                <Grid3X3 className="h-4 w-4" />
+                <span>Locations &amp; Bins</span>
+              </div>
+            </button>
+
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              VISUAL WAREHOUSE TOOLS
+            </div>
+
+            <button onClick={() => setActiveTab('warehouse-map-designer')} className={getItemClasses('warehouse-map-designer')}>
+              <div className="flex items-center gap-2.5">
+                <Map className="h-4 w-4" />
+                <span>Warehouse Map</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-map-designer')} className={getSubItemClasses('warehouse-map-designer')}>
+              <span>Map Designer</span>
             </button>
 
             <button onClick={() => setActiveTab('warehouse-racks-bins')} className={getItemClasses('warehouse-racks-bins')}>
               <div className="flex items-center gap-2.5">
                 <Grid3X3 className="h-4 w-4" />
-                <span>Racks & Bins</span>
+                <span>Racks &amp; Bins</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('warehouse-receiving')} className={getItemClasses('warehouse-putaway')}>
+              <div className="flex items-center gap-2.5">
+                <Download className="h-4 w-4" />
+                <span>Receiving &amp; Putaway</span>
               </div>
             </button>
 
             <button onClick={() => setActiveTab('warehouse-qr-labels')} className={getItemClasses('warehouse-qr-labels')}>
               <div className="flex items-center gap-2.5">
                 <QrCode className="h-4 w-4" />
-                <span>QR Labels & Scanner</span>
+                <span>QR Labels &amp; Scanner</span>
               </div>
             </button>
 
@@ -264,10 +424,10 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               </div>
             </button>
 
-            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-transfers-picking')}>
+            <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getItemClasses('warehouse-transfers')}>
               <div className="flex items-center gap-2.5">
                 <Repeat className="h-4 w-4" />
-                <span>Transfers & Picking</span>
+                <span>Transfers &amp; Picking</span>
               </div>
             </button>
 
@@ -278,30 +438,66 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               </div>
             </button>
 
-            <button onClick={() => setActiveTab('warehouse-map-designer')} className={getItemClasses('warehouse-map-designer')}>
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              MANAGEMENT
+            </div>
+
+            <button onClick={() => setActiveTab('warehouse-overview')} className={getItemClasses('mgmt-warehouses')}>
               <div className="flex items-center gap-2.5">
-                <Map className="h-4 w-4" />
-                <span>Map Designer</span>
+                <Warehouse className="h-4 w-4" />
+                <span>Warehouses</span>
               </div>
             </button>
+
+            <button onClick={() => setActiveTab('billing')} className={getItemClasses('mgmt-rates')}>
+              <div className="flex items-center gap-2.5">
+                <DollarSign className="h-4 w-4" />
+                <span>Storage Rates</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('customers')} className={getItemClasses('mgmt-customers')}>
+              <div className="flex items-center gap-2.5">
+                <Users className="h-4 w-4" />
+                <span>Customers</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('customers')} className={getItemClasses('mgmt-employees')}>
+              <div className="flex items-center gap-2.5">
+                <UserCheck className="h-4 w-4" />
+                <span>Employees</span>
+              </div>
+            </button>
+
+            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              REPORTS
+            </div>
 
             <button onClick={() => setActiveTab('warehouse-reports')} className={getItemClasses('warehouse-reports')}>
               <div className="flex items-center gap-2.5">
                 <BarChart3 className="h-4 w-4" />
-                <span>Reports</span>
+                <span>Occupancy Report</span>
               </div>
             </button>
 
-            <button onClick={() => setActiveTab('settings')} className={getItemClasses('settings')}>
-              <div className="flex items-center gap-2.5">
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </div>
+            <button onClick={() => setActiveTab('warehouse-reports')} className={getSubItemClasses('warehouse-reports')}>
+              <span>Inventory Report</span>
+            </button>
+
+            <button onClick={() => setActiveTab('billing')} className={getSubItemClasses('billing')}>
+              <span>Storage Revenue</span>
+            </button>
+
+            <button onClick={() => setActiveTab('analytics')} className={getSubItemClasses('analytics')}>
+              <span>Activity Logs</span>
             </button>
           </>
         )}
 
-        {/* ================= CUSTOMER PORTAL NAVIGATION ================= */}
+        {/* ========================================================= */}
+        {/* ============= CUSTOMER PORTAL NAVIGATION ================ */}
+        {/* ========================================================= */}
         {currentRole === 'customer' && (
           <>
             <button onClick={() => setActiveTab('customer-overview')} className={getItemClasses('customer-overview')}>
@@ -356,7 +552,24 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
             <button onClick={() => setActiveTab('customer-invoices')} className={getItemClasses('customer-invoices')}>
               <div className="flex items-center gap-2.5">
                 <CreditCard className="h-4 w-4" />
-                <span>Payments & Invoices</span>
+                <span>Payments &amp; Invoices</span>
+              </div>
+            </button>
+
+            <button onClick={() => setActiveTab('notifications')} className={getItemClasses('notifications')}>
+              <div className="flex items-center gap-2.5">
+                <Bell className="h-4 w-4" />
+                <span>Notifications</span>
+              </div>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                3
+              </span>
+            </button>
+
+            <button onClick={() => alert('Customer 24/7 dedicated support desk: +255 777 000 888')} className={getItemClasses('support')}>
+              <div className="flex items-center gap-2.5">
+                <LifeBuoy className="h-4 w-4" />
+                <span>Support</span>
               </div>
             </button>
 
@@ -369,7 +582,9 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
           </>
         )}
 
-        {/* ================= DRIVER PORTAL NAVIGATION ================= */}
+        {/* ========================================================= */}
+        {/* ============= DRIVER PORTAL NAVIGATION ================== */}
+        {/* ========================================================= */}
         {currentRole === 'driver' && (
           <>
             <button onClick={() => setActiveTab('driver-dashboard')} className={getItemClasses('driver-dashboard')}>
@@ -436,6 +651,23 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
                 <span>Trip History</span>
               </div>
             </button>
+
+            <button onClick={() => setActiveTab('notifications')} className={getItemClasses('notifications')}>
+              <div className="flex items-center gap-2.5">
+                <Bell className="h-4 w-4" />
+                <span>Notifications</span>
+              </div>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
+                3
+              </span>
+            </button>
+
+            <button onClick={() => setActiveTab('settings')} className={getItemClasses('settings')}>
+              <div className="flex items-center gap-2.5">
+                <Users className="h-4 w-4" />
+                <span>Profile</span>
+              </div>
+            </button>
           </>
         )}
       </div>
@@ -450,19 +682,25 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               <p className="text-[10px] text-slate-400">Contact dispatch team</p>
             </div>
           </div>
-          <button className="mt-2.5 w-full flex items-center justify-center gap-1.5 rounded-lg border border-slate-600 bg-slate-900/60 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700">
+          <button
+            onClick={() => alert('Dialing central dispatch hotline: +255 777 123 456')}
+            className="mt-2.5 w-full flex items-center justify-center gap-1.5 rounded-lg border border-slate-600 bg-slate-900/60 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700"
+          >
             <PhoneCall className="h-3.5 w-3.5 text-blue-400" />
             <span>Call Support</span>
           </button>
         </div>
       )}
 
-      {/* Customer Help Box */}
+      {/* Customer Help Box (as shown in Customer Dashboard screenshot) */}
       {currentRole === 'customer' && (
         <div className="p-3 mx-3 mb-3 rounded-xl bg-slate-800/80 border border-slate-700/60">
           <p className="text-xs font-bold text-white">Need Help?</p>
           <p className="text-[10px] text-slate-400">Contact our support team</p>
-          <button className="mt-2 w-full rounded-lg border border-slate-600 bg-slate-900/60 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700">
+          <button
+            onClick={() => alert('Customer 24/7 dedicated support desk: +255 777 000 888')}
+            className="mt-2 w-full rounded-lg border border-slate-600 bg-slate-900/60 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700"
+          >
             Contact Support
           </button>
         </div>
@@ -474,11 +712,10 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>System Online</span>
         </div>
-        <span className="text-[10px] font-mono text-slate-500">v2.4.0</span>
+        <span className="text-[10px] font-mono text-slate-400 font-bold">SWAHIVO OS</span>
       </div>
     </aside>
   );
 }
 
 export default Sidebar;
-

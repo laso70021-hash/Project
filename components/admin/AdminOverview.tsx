@@ -281,18 +281,24 @@ export function AdminOverview({ onNavigate }: AdminOverviewProps) {
         <div className="lg:col-span-4 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-xs font-bold text-slate-900">Live Tracking</h3>
-              <p className="text-[11px] text-slate-500">Active regional GPS fleet status</p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs font-bold text-slate-900">Live Tracking</h3>
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 border border-emerald-200">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Real-Time GPS
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500">Google Maps Platform • Active corridor telematics</p>
             </div>
             <button
               onClick={() => handleNav('transporters')}
-              className="text-[10px] font-semibold text-blue-600 hover:text-blue-700"
+              className="text-[10px] font-semibold text-blue-600 hover:text-blue-700 transition-colors"
             >
-              View All
+              Fleet Telematics
             </button>
           </div>
-          <div className="flex-1 min-h-[220px]">
-            <RouteMap variant="admin" heightClass="h-full min-h-[220px]" />
+          <div className="flex-1 min-h-[260px] rounded-lg overflow-hidden border border-slate-100 shadow-inner">
+            <RouteMap variant="admin" heightClass="h-full min-h-[260px]" />
           </div>
         </div>
       </div>

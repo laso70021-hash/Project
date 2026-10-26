@@ -22,7 +22,7 @@ interface HeaderProps {
 export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
   const handleOpenAssistant = onOpenMaps || onOpenAiAssistant;
 
-  const { currentRole, setCurrentRole, selectedWarehouse, setSelectedWarehouse, shipments } = useAppStore();
+  const { currentRole, setCurrentRole, setActiveTab, selectedWarehouse, setSelectedWarehouse, shipments } = useAppStore();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showWarehouseMenu, setShowWarehouseMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -213,6 +213,10 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
                     key={item.role}
                     onClick={() => {
                       setCurrentRole(item.role as any);
+                      if (item.role === 'admin') setActiveTab('dashboard');
+                      else if (item.role === 'warehouse_manager') setActiveTab('warehouse-overview');
+                      else if (item.role === 'customer') setActiveTab('customer-overview');
+                      else if (item.role === 'driver') setActiveTab('driver-dashboard');
                       setShowRoleMenu(false);
                     }}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left transition-colors ${

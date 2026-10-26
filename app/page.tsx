@@ -65,63 +65,143 @@ function MainAppShell() {
     return <LandingPageView />;
   }
 
-  // Render active operational module
+  // Render active operational module according to activeTab and currentRole
   const renderActiveModule = () => {
     switch (activeTab) {
       // Admin Operations
       case 'dashboard':
+      case 'admin-overview':
+      case 'admin_overview':
         return <AdminOverview onNavigate={setActiveTab} />;
 
       case 'shipments':
-        return <ShipmentsView />;
+      case 'all-shipments':
+      case 'pickup-management':
+      case 'delivery-management':
+        return <ShipmentsView onNavigateToCreate={() => setActiveTab('create-shipment')} />;
+
+      case 'create-shipment':
       case 'create_shipment':
-        return <CreateShipmentView />;
+        return (
+          <CreateShipmentView
+            onSuccess={() => setActiveTab('shipments')}
+            onCancel={() => setActiveTab('dashboard')}
+          />
+        );
+
       case 'customers':
+      case 'customers-crm':
+      case 'users-permissions':
+      case 'mgmt-customers':
+      case 'mgmt-employees':
         return <CustomersCRMView />;
+
       case 'transporters':
       case 'fleet':
+      case 'routes-coverage':
         return <TransportersView />;
+
       case 'billing':
+      case 'invoices-payments':
+      case 'quotes-pricing':
+      case 'mgmt-rates':
         return <BillingView />;
 
+      case 'analytics':
+      case 'reports':
+      case 'audit-logs':
+        return <WarehouseReports />;
+
       // Warehouse Operations
+      case 'warehouse-overview':
       case 'wh_overview':
       case 'wh_inventory':
+      case 'warehouse-inventory':
+      case 'mgmt-warehouses':
         return <WarehouseOverview />;
+
+      case 'warehouse-map-designer':
       case 'wh_designer':
         return <WarehouseMapDesigner />;
+
+      case 'warehouse-racks-bins':
+      case 'warehouse-locations-bins':
       case 'wh_racks':
       case 'wh_bins':
         return <WarehouseRacksBins />;
+
+      case 'warehouse-receiving':
+      case 'warehouse-receiving-putaway':
+      case 'warehouse-putaway':
+      case 'warehouse-bookings':
       case 'wh_receiving':
       case 'wh_expected':
         return <WarehouseReceiving />;
+
+      case 'warehouse-locate-package':
       case 'wh_locator':
         return <WarehousePackageLocator />;
+
+      case 'warehouse-qr-labels':
       case 'wh_qr':
         return <WarehouseQRLabels />;
+
+      case 'warehouse-transfers-picking':
+      case 'warehouse-transfers':
+      case 'warehouse-dispatch':
+      case 'warehouse-shipping-handoff':
+      case 'warehouse-movements':
       case 'wh_transfers':
         return <WarehouseTransfersPicking />;
+
+      case 'warehouse-cycle-counts':
       case 'wh_cycle_counts':
         return <WarehouseCycleCounts />;
+
+      case 'warehouse-reports':
       case 'wh_reports':
         return <WarehouseReports />;
 
-      // Customer Portal
+      // Customer Portal (Full-page child routing)
+      case 'customer-overview':
+      case 'customer_overview':
       case 'customer_portal':
-        return <CustomerPortalView />;
+      case 'customer-bookings':
+      case 'customer-inventory':
+      case 'customer-dispatch':
+      case 'customer-shipments':
+      case 'customer-create-shipment':
+      case 'customer-track':
+      case 'customer-invoices':
+        return <CustomerPortalView initialTab={activeTab} />;
 
-      // Driver Portal
+      // Driver Portal (Full-page child routing)
+      case 'driver-dashboard':
+      case 'driver_dashboard':
       case 'driver_portal':
-        return <DriverPortalView />;
+      case 'driver-assignments':
+      case 'driver-pickups':
+      case 'driver-active':
+      case 'driver-deliveries':
+      case 'driver-scan':
+      case 'driver-confirmation':
+      case 'driver-history':
+        return <DriverPortalView initialTab={activeTab} />;
+
+      case 'settings':
+        if (currentRole === 'customer') return <CustomerPortalView initialTab="settings" />;
+        if (currentRole === 'driver') return <DriverPortalView initialTab="settings" />;
+        return <BillingView />;
+
+      case 'notifications':
+        return <AdminOverview onNavigate={setActiveTab} />;
 
       default:
         if (currentRole === 'warehouse_manager') return <WarehouseOverview />;
-        if (currentRole === 'customer') return <CustomerPortalView />;
-        if (currentRole === 'driver') return <DriverPortalView />;
+        if (currentRole === 'customer') return <CustomerPortalView initialTab={activeTab} />;
+        if (currentRole === 'driver') return <DriverPortalView initialTab={activeTab} />;
         return <AdminOverview onNavigate={setActiveTab} />;
     }
-
   };
 
   return (
@@ -129,9 +209,8 @@ function MainAppShell() {
       {/* Dark Navy Persistent Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* Main Content Area (Offset by 235px sidebar width) */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden pl-[235px]">
         {/* Global Operational Header */}
         <Header onOpenMaps={() => setIsMapsOpen(true)} />
 

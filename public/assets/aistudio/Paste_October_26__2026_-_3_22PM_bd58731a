@@ -1,0 +1,1351 @@
+# SWAHIVO LOGISTICS OS
+## GOOGLE AI STUDIO — MASTER PROJECT REPAIR, COMPLETE DASHBOARD IMPLEMENTATION & EXACT SCREENSHOT RECONSTRUCTION
+
+### CRITICAL PROJECT STATUS
+
+You previously attempted to build my Swahivo Logistics SaaS application, but the implementation is seriously incomplete.
+
+The existing project has several critical problems:
+
+1. The landing page does not match the reference screenshot.
+2. Several dashboard sidebar items are only labels without real functional pages.
+3. Dashboard pages are incomplete or missing.
+4. Some buttons do not perform their advertised actions.
+5. Some features appear to be demonstrations rather than real product functionality.
+6. The Admin, Customer, Warehouse, and Driver dashboards are not fully connected.
+7. The warehouse and shipping operational workflows are incomplete.
+8. The UI has not consistently followed the supplied screenshots.
+9. Frontend components and backend data operations may be disconnected.
+10. The implementation has not been adequately tested.
+
+**YOUR TASK IS TO FIX AND COMPLETE THE EXISTING APPLICATION.**
+
+Do not generate another prototype.
+
+Do not create another project.
+
+Do not present a design concept as completed functionality.
+
+Do not stop after creating pages with navigation labels.
+
+You must inspect the existing source code, identify what is incomplete, repair it, implement missing functionality, connect the real backend, and test the results.
+
+---
+
+# 1. REQUIRED TECHNOLOGY STACK
+
+This is an existing application built with:
+
+- Vite
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Convex backend and database
+
+Preserve this stack.
+
+Do not migrate to Next.js.
+
+Do not replace Convex with Supabase, Firebase, localStorage, or an unrelated backend.
+
+Do not remove working functionality.
+
+Reuse existing components, routing, database collections, authentication, and business logic wherever possible.
+
+If the existing code uses another backend or contains mock services, identify the discrepancy, preserve legitimate data, and implement the required Convex integration safely.
+
+All operational data must come from the real backend.
+
+---
+
+# 2. FIRST: INSPECT YOUR PREVIOUS IMPLEMENTATION
+
+Before changing code, inspect the actual application.
+
+Review:
+
+- Existing project architecture
+- Application routes
+- Sidebar navigation components
+- Dashboard layouts
+- Public landing page
+- Authentication and role management
+- Existing Convex configuration
+- Convex schema
+- Queries, mutations, and actions
+- Data fetching components
+- Forms and validation
+- Customer management
+- Shipment management
+- Warehouse management
+- Driver management
+- Billing
+- Document generation
+- Notifications
+- Analytics
+- Existing tests
+
+Identify which components are complete, incomplete, broken, or missing.
+
+### Inspect Every Sidebar Item
+
+For each menu item:
+
+1. Find its actual route.
+2. Find the React page component.
+3. Determine whether it renders useful functionality.
+4. Verify its buttons and links.
+5. Verify its connection to Convex.
+6. Verify access permissions.
+7. Identify the corresponding reference screenshot.
+8. Determine the required repair.
+
+A sidebar item is not functional simply because it changes the URL.
+
+A page is not complete simply because it displays a title.
+
+A button is not working simply because it displays a success toast.
+
+**Every navigation item must open a real application page containing its required business features.**
+
+After the inspection, implement the repairs. Do not stop at the audit.
+
+---
+
+# 3. SCREENSHOT-FIRST IMPLEMENTATION — STRICT REQUIREMENT
+
+I have provided screenshots showing exactly how the platform should look.
+
+These screenshots are mandatory visual references, not optional inspiration.
+
+Do not create a different design.
+
+Do not use your preferred dashboard layout.
+
+Do not generate generic SaaS cards or unrelated component structures.
+
+### MASTER SCREENSHOT REFERENCES
+
+**Landing Page**
+
+`TZLogistics Warehouse & Shipping Platform(2).png`
+
+**Admin Dashboard**
+
+`TZLogistics Admin Dashboard Overview(2).png`
+
+**Customer Dashboard**
+
+`TZLogistics Operations Dashboard(2).png`
+
+`SWAHIVO Logistics Customer Dashboard(1).png`
+
+**Warehouse Dashboard**
+
+`TZLogistics Warehouse Operations Dashboard(2).png`
+
+**Driver Dashboard**
+
+`TZLogistics Driver Dashboard(2).png`
+
+### CHILD PAGE REFERENCES
+
+- `SWAHIVO Logistics Shipment Dashboard(1).png`
+- `SWAHIVO Shipment Creation Dashboard(1).png`
+- `Transporter Management Dashboard(1).png`
+- `SWAHIVO Billing Dashboard Overview(1).png`
+- `Swahivo Logistics Reports Dashboard(1).png`
+- `Warehouse Map Designer Dashboard(1).png`
+- `Warehouse Racks & Bins Dashboard(1).png`
+- `SWAHIVO Warehouse Receiving Dashboard(1).png`
+- `Warehouse QR Labels Dashboard(1).png`
+- `SWAHIVO Warehouse Package Locator Dashboard(1).png`
+- `Warehouse Transfers & Picking Dashboard(1).png`
+- `Warehouse Cycle Count Dashboard(1).png`
+
+Also inspect any additional uploaded Customers CRM, warehouse overview, QR receipt, shipment, and role-specific reference screenshots.
+
+If a reference is inaccessible, identify it explicitly. Do not pretend you inspected it.
+
+### VISUAL IMPLEMENTATION RULE
+
+For each page:
+
+1. Open and analyze its reference.
+2. Identify the exact major layout sections.
+3. Inspect the existing React implementation.
+4. Correct missing or misplaced sections.
+5. Match the sidebar and header.
+6. Match the number and arrangement of KPI cards.
+7. Match the main content grid.
+8. Match tables, filters, tabs, maps, charts, forms, and permanent detail panels.
+9. Follow the reference's typography, spacing, colors, and component styling.
+10. Test the page.
+11. Compare a rendered screenshot with the reference where browser tooling is available.
+12. Repair significant differences.
+
+The screenshots determine the UI structure.
+
+The application's real backend determines operational data.
+
+Do not hardcode the example figures or customer details shown in the reference images.
+
+---
+
+# 4. CRITICAL REPAIR: LANDING PAGE
+
+**The landing page currently does not match the reference. Fix it first.**
+
+Use:
+
+`TZLogistics Warehouse & Shipping Platform(2).png`
+
+as the primary landing page reference.
+
+## Required Visual Structure
+
+### A. Navigation
+
+Recreate the reference navigation:
+
+- Brand logo
+- Home
+- Warehouse
+- Shipping
+- Pricing
+- About
+- Contact
+- Tracking search
+- Sign In
+- Get Started
+
+Replace reference branding with:
+
+**SWAHIVO Logistics OS**
+
+Keep the reference's horizontal navbar styling, spacing, alignment, and responsive behavior.
+
+### B. Hero Section
+
+Follow the supplied reference's large logistics-themed hero.
+
+The reference includes:
+
+- Warehouse shelving imagery
+- Cargo transportation imagery
+- A prominent headline
+- Supporting description
+- Primary CTAs
+- Shipment tracking card
+- Key service highlights
+
+Use the approved Swahivo headline:
+
+**Warehouse + Shipping in Tanzania and Beyond**
+
+Supporting copy:
+
+Secure storage, inventory management, and reliable shipping—all in one connected platform. Manage your goods online, book warehouse storage, and arrange deliveries across Tanzania and East Africa.
+
+Primary actions:
+
+**Book Warehouse Storage**
+
+**Request Shipping**
+
+Include the reference-style shipment tracking panel.
+
+Do not replace the hero with a generic gradient and a few icons.
+
+Do not replace the logistics imagery with unrelated illustrations.
+
+Do not create a different hero composition.
+
+### C. Two Service Options
+
+Create the reference's two major service sections.
+
+**Warehouse + Shipping**
+
+Customers can:
+
+- Book warehouse space
+- Request storage
+- Monitor inventory
+- View storage charges
+- Dispatch stored goods
+- Track shipments
+
+**Shipping Only**
+
+Customers can:
+
+- Create a shipment without booking storage
+- Request pickup
+- Enter destinations
+- Specify cargo
+- Obtain applicable quotes
+- Track delivery
+
+These services must operate independently where appropriate.
+
+Shipping Only must NOT require a warehouse storage booking.
+
+### D. How It Works
+
+Preserve the reference's workflow design:
+
+1. Book
+2. Receive & Store
+3. View Inventory
+4. Ship
+5. Pay
+6. Track & Deliver
+
+Use the same horizontal, visually connected step layout on desktop.
+
+### E. Additional Public Sections
+
+Inspect the existing public website and preserve or complete approved sections such as:
+
+- Services
+- Regions and coverage
+- Pricing
+- About
+- Contact
+- FAQ
+- Footer
+
+Their styling must remain consistent with the provided landing page.
+
+Do not invent unrelated public sections.
+
+### F. Real Functional Connections
+
+Landing page buttons must work:
+
+- Book Warehouse Storage opens the proper booking workflow.
+- Request Shipping opens the Shipping Only workflow.
+- Track Shipment opens the actual tracking results.
+- Sign In opens authentication.
+- Get Started opens the existing registration flow.
+- Navigation links open their corresponding pages.
+
+If authentication is required, preserve the intended destination after login.
+
+### Landing Page Acceptance Criteria
+
+The landing page is complete only if:
+
+- Its visual hierarchy matches the screenshot.
+- All main sections exist.
+- Navigation works.
+- Every CTA has a valid destination.
+- Tracking uses actual backend shipment records.
+- Mobile/tablet layouts are usable.
+- No false tracking data is displayed.
+
+---
+
+# 5. CRITICAL REPAIR: ADMIN DASHBOARD
+
+Use:
+
+`TZLogistics Admin Dashboard Overview(2).png`
+
+This is the main administrative design reference.
+
+**Do not redesign it.**
+
+## Admin Dashboard Overview
+
+Reconstruct these KPI cards:
+
+- Total Shipments
+- Active Storage
+- In Transit
+- Delivered
+- Pending Actions
+- Revenue
+
+Main sections:
+
+- Shipments Overview chart
+- Warehouse Capacity
+- Live Tracking Map
+- Storage Bookings
+- Recent Invoices
+- Recent Activities
+- Recent Shipments
+
+Use data from real Convex queries.
+
+If there are no records, display accurate empty states.
+
+## Admin Sidebar — Full Functional Requirements
+
+### OPERATIONS
+
+**Dashboard**
+
+Implement actual company-wide logistics statistics.
+
+**Shipments**
+
+Implement:
+
+- Shipment list
+- Shipment status filters
+- Shipment search
+- Shipment details
+- Assignments
+- Timeline
+- Documents
+- Tracking information
+- Authorized status updates
+
+**Create Shipment**
+
+Implement the full five-step shipment creation workflow using the supplied reference.
+
+**Pickup Management**
+
+Implement:
+
+- Pending pickups
+- Scheduled pickups
+- Assigned pickups
+- In-progress pickups
+- Completed pickups
+- Failed pickups
+- Driver assignment
+- Pickup confirmation
+- Pickup history
+
+Every status tab must show the appropriate records.
+
+**Delivery Management**
+
+Implement:
+
+- Pending deliveries
+- Assigned deliveries
+- In Transit
+- Out for Delivery
+- Delivered
+- Failed Delivery
+- Delivery exceptions
+- Proof of Delivery
+
+Delivered shipments must appear in the Delivered section, not in every tab.
+
+**Warehouse Management**
+
+Include:
+
+- Warehouses
+- Storage Bookings
+- Receiving
+- Inventory
+- Warehouse → Shipping
+- Stock Movements
+- Storage Rates
+- Locations & Bins
+
+Integrate the new Visual Warehouse Mapping capabilities.
+
+**Customers**
+
+Implement customer CRM, profiles, shipments, inventory, communications, and billing relationships.
+
+**Drivers & Vehicles**
+
+Implement driver registration, vehicle management, capacity, assignment, availability, and status.
+
+**Transporters**
+
+Implement approved carrier/provider management, drivers, vehicles, assignments, documents, and performance.
+
+**Routes & Coverage**
+
+Implement actual operating areas, supported routes, and available transportation services.
+
+### FINANCE
+
+**Quotes & Pricing**
+
+Implement configurable service pricing and genuine quote generation.
+
+**Invoices & Payments**
+
+Implement actual invoice creation, payment recording, reconciliation, payment status, and document downloads.
+
+**Reports & Analytics**
+
+Implement real operational and financial reporting.
+
+### SYSTEM
+
+**Users & Permissions**
+
+Implement genuine user role and organization access management.
+
+**Notifications**
+
+Implement real, persisted system notifications.
+
+**Audit Logs**
+
+Record sensitive operational and financial changes.
+
+**System Settings**
+
+Implement functional company settings, business information, document settings, service configuration, and applicable integrations.
+
+## Admin Acceptance Rule
+
+**Every sidebar item must lead to a complete functional page.**
+
+Do not reuse the Admin Overview as a substitute for every menu destination.
+
+---
+
+# 6. CRITICAL REPAIR: CUSTOMER DASHBOARD
+
+Use the uploaded Customer dashboard screenshots.
+
+Maintain their exact content structure and apply the common design system.
+
+## Customer Overview
+
+KPI cards:
+
+- Active Storage
+- Total Bookings
+- Active Shipments
+- Delivered
+- Pending Payments
+- Total Spent
+
+Main sections:
+
+- My Warehouse Inventory
+- Storage Bookings
+- My Shipments
+- Track Your Shipment
+- Recent Invoices
+- Recent Activity
+
+## Customer Sidebar and Functions
+
+**Overview**
+
+Display the customer's actual logistics activity.
+
+**Warehouse Bookings**
+
+Allow customers to:
+
+- Select a warehouse
+- Choose storage service
+- Register cargo details
+- Submit a booking
+- View booking status
+- View approved/rejected bookings
+- Review storage pricing
+- See storage history
+
+**My Inventory**
+
+Display:
+
+- Actual stored packages
+- Quantity
+- Available quantity
+- Reserved quantity
+- Warehouse
+- Storage status
+- Package details
+- Request Dispatch
+
+**Request Dispatch**
+
+Allow customers to select eligible inventory from the warehouse and request shipping.
+
+Connect dispatch requests to Warehouse Picking and Admin Shipment Management.
+
+**My Shipments**
+
+Display actual customer shipments with functional status filters.
+
+**Create Shipment**
+
+Support Standard Shipping and Warehouse + Shipping.
+
+**Track Shipment**
+
+Display the customer's real shipment status, last verified tracking event, and appropriate delivery progress.
+
+**Payments & Invoices**
+
+Show the customer's real invoices and payments.
+
+**Notifications**
+
+Display real updates for bookings, shipments, payments, and deliveries.
+
+**Support**
+
+Support actual case creation, history, and follow-up.
+
+**Settings**
+
+Allow authorized profile, business, and account changes.
+
+## Customer Security
+
+Customers must only access their own permitted records.
+
+Do not expose internal warehouse layouts, staff-only notes, other customers' information, or restricted financial data.
+
+---
+
+# 7. CRITICAL REPAIR: WAREHOUSE DASHBOARD
+
+Use:
+
+`TZLogistics Warehouse Operations Dashboard(2).png`
+
+This is the primary Warehouse Manager overview reference.
+
+Reconstruct the actual layout.
+
+## Warehouse Overview KPIs
+
+- Total Capacity
+- Occupied
+- Available
+- Expected Arrivals
+- Pending Receiving
+- Awaiting Dispatch
+
+Main content:
+
+- Warehouse Occupancy
+- Inventory by Category
+- Storage Locations
+- Expected Arrivals
+- Pending Receiving
+- Picking Tasks
+- Inventory Overview
+- Dispatch Queue
+- Recent Activity
+
+## Required Warehouse Pages
+
+### Storage Bookings
+
+Display bookings linked to the correct warehouse.
+
+Allow review, approval where authorized, and scheduling.
+
+### Expected Arrivals
+
+Show incoming bookings and shipments.
+
+Include expected arrival times, customers, quantities, and receiving actions.
+
+### Goods Receiving
+
+Implement physical receiving, package verification, condition recording, and receipt generation.
+
+### Warehouse Map
+
+Show the actual interactive warehouse layout.
+
+Display racks, zones, storage locations, occupancy, and package positions based on verified records.
+
+### Map Designer
+
+Use `react-konva`.
+
+Implement:
+
+- Draw warehouse boundaries
+- Add racks
+- Add doors
+- Add zones
+- Add aisles
+- Drag, resize, and rotate supported elements
+- Edit object properties
+- Save draft layouts
+- Publish authorized map revisions
+- Persist geometry in Convex
+
+### Racks & Bins
+
+Implement:
+
+- Create Rack
+- Configure Shelf Levels
+- Create Bins
+- Generate Unique Location Codes
+- Assign Capacity
+- View Occupancy
+- View Stored Packages
+- Block/Unblock Locations
+- Locate on Map
+
+Example location:
+
+`WH001-A-R05-L02-B03`
+
+### Receiving & Putaway
+
+Follow the supplied screenshot's workflow:
+
+1. Receive Packages
+2. Print Labels
+3. Assign Storage
+4. Scan & Putaway
+5. Complete
+
+A package becomes Stored only after verified putaway.
+
+### QR Labels & Scanner
+
+Use genuine libraries:
+
+- `qrcode`
+- `@zxing/browser`
+- `react-to-print`
+
+Generate functional:
+
+- Package QR labels
+- Storage location QR labels
+- Shipment-related labels where applicable
+
+Scanning must resolve actual authorized Convex records.
+
+**Do not draw fake QR patterns.**
+
+### Locate Package
+
+Allow warehouse staff to search by:
+
+- Package ID
+- Shipment number
+- Location code
+- Customer reference
+- QR scan
+
+When a package is found:
+
+1. Open correct warehouse.
+2. Open correct floor.
+3. Highlight correct rack.
+4. Highlight exact shelf level.
+5. Highlight exact bin.
+6. Display package details.
+7. Display verified movement history.
+
+### Transfers & Picking
+
+Implement:
+
+- Pending Picks
+- In Picking
+- Ready for Dispatch
+- Internal Transfers
+- Completed Picks
+- Scan to Confirm
+- Movement Records
+
+Connect these actions to real shipment and inventory state transitions.
+
+### Cycle Counts
+
+Implement:
+
+- Start physical count
+- Scan packages
+- Compare expected inventory
+- Record discrepancies
+- Investigate missing goods
+- Confirm reconciliations
+- Generate count reports
+
+### Warehouse Reports
+
+Implement:
+
+- Inventory Report
+- Occupancy Report
+- Location Utilization
+- Movement Report
+- Storage Aging
+- Cycle Count Report
+- Activity Logs
+
+### Warehouse to Shipping
+
+A stored package must be eligible for a real dispatch workflow.
+
+Warehouse staff must be able to identify, pick, verify, pack, and hand over goods for shipping.
+
+The shipment must then appear in the existing shipping and dispatch system.
+
+Do not create a disconnected second shipment system.
+
+---
+
+# 8. CRITICAL REPAIR: DRIVER DASHBOARD
+
+Use:
+
+`TZLogistics Driver Dashboard(2).png`
+
+Preserve the screenshot's navigation, map layout, assignment cards, route list, and operational timeline.
+
+## Driver Overview
+
+KPI cards:
+
+- My Assignments
+- Scheduled Today
+- In Transit
+- Completed
+- Issues
+- Total Distance
+
+Main sections:
+
+- Today's Route
+- Route Stops
+- Current Assignment
+- My Assignments
+- Shipment Timeline
+
+## Driver Sidebar
+
+### My Assignments
+
+Show real work assigned to the authenticated driver.
+
+### Scheduled Pickups
+
+Show pending pickups with customer, location, cargo, and scheduled time.
+
+### Active Shipments
+
+Display currently assigned in-progress shipments.
+
+### Deliveries
+
+Provide assigned delivery lists, statuses, and delivery actions.
+
+### Scan Package
+
+Use actual QR scanning to validate packages.
+
+### Delivery Confirmation
+
+Implement:
+
+- Recipient Name
+- Delivery Time
+- Signature
+- Delivery Photo where permitted
+- Notes
+- Proof of Delivery
+- Confirm Delivery
+
+### Trip History
+
+Display completed assignments and actual recorded trip information.
+
+### Notifications
+
+Display actual assignment and operations alerts.
+
+### Profile
+
+Allow authorized driver profile updates.
+
+## Real Tracking Rule
+
+Do not simulate a moving GPS marker.
+
+Only display positions from authorized driver location reports or genuine configured telematics integrations.
+
+If live location is unavailable, clearly show the last confirmed tracking event.
+
+---
+
+# 9. SHIPPING SERVICES — TWO INDEPENDENT WORKFLOWS
+
+This is essential to the original product.
+
+### WORKFLOW A — SHIPPING ONLY
+
+Customer creates a shipment without booking warehouse storage.
+
+Flow:
+
+Customer → Create Shipment → Pickup Request → Driver Assignment → Pickup → Transit → Delivery → Proof of Delivery
+
+Do not force storage booking.
+
+### WORKFLOW B — WAREHOUSE + SHIPPING
+
+Customer books warehouse storage.
+
+Flow:
+
+Customer → Storage Booking → Warehouse Approval → Receiving → Putaway → Inventory → Request Dispatch → Picking → Shipping → Delivery
+
+Both workflows must use shared shipment and customer records where appropriate.
+
+They must not be implemented as disconnected modules.
+
+---
+
+# 10. CROSS-DASHBOARD REAL-TIME INTEGRATION
+
+Admin, Customer, Warehouse, and Driver interfaces must operate on shared backend records.
+
+Example:
+
+A customer creates a shipment.
+
+The shipment becomes visible in the authorized Admin dashboard.
+
+The Admin assigns a driver.
+
+The assignment appears in the Driver dashboard.
+
+The driver confirms pickup.
+
+The shipment status changes to Picked Up.
+
+Admin and Customer dashboards update accordingly.
+
+Warehouse staff process goods when the selected workflow requires warehouse operations.
+
+The driver records delivery confirmation.
+
+The shipment becomes Delivered.
+
+The customer sees the completed delivery.
+
+Finance updates any applicable billable milestone.
+
+Notifications are created where required.
+
+All of these changes must be driven by real Convex data and authorized state transitions.
+
+**Do not implement separate mock datasets for each dashboard.**
+
+---
+
+# 11. CONVEX BACKEND — REAL FUNCTIONALITY
+
+Audit the existing Convex schema and functions before changing them.
+
+Reuse the current collections for:
+
+- Organizations
+- Users
+- Memberships
+- Customers
+- Warehouses
+- Storage Bookings
+- Packages
+- Inventory
+- Shipments
+- Transporters
+- Drivers
+- Vehicles
+- Assignments
+- Payments
+- Invoices
+- Notifications
+- Audit Logs
+
+Extend existing collections as necessary.
+
+Do not duplicate records for the same physical package or shipment.
+
+Implement proper:
+
+- Authentication
+- Backend authorization
+- Organization isolation
+- Input validation
+- Uniqueness checks
+- Atomic inventory updates
+- Shipment state transitions
+- Audit histories
+- Indexes
+- Error handling
+
+Do not trust organization IDs, roles, pricing, or resource ownership supplied by frontend forms without backend verification.
+
+Do not expose service credentials in frontend code.
+
+If Convex credentials or deployment configuration are missing, identify the exact required configuration and request it securely.
+
+Do not invent credentials.
+
+---
+
+# 12. CRITICAL UI RULE — NO POPUP-CARD WORKFLOWS
+
+Do not redesign full pages into floating popup cards.
+
+Use:
+
+- Full-page routed interfaces
+- Standard dashboard panels
+- Inline detail sections
+- Permanent side information panels
+- Tables
+- Tabs
+- Dedicated forms
+
+Popup dialogs must not replace entire functional pages.
+
+Keep the original KPI cards and fixed information panels visible in the screenshots.
+
+The restriction is against modal-based shortcuts that avoid implementing complete pages.
+
+---
+
+# 13. REPAIR DEAD SIDEBAR LABELS
+
+You must specifically fix the existing problem where sidebar elements are present but do not provide functional pages.
+
+For every navigation item:
+
+- Verify its route.
+- Verify its component.
+- Implement missing content.
+- Connect real backend queries.
+- Connect actions to authorized mutations.
+- Verify loading and error states.
+- Verify functional filtering.
+- Verify navigation to details.
+- Verify responsive behavior.
+
+### Forbidden Implementations
+
+Do not create:
+
+```tsx
+function WarehouseMap() {
+  return <h1>Warehouse Map</h1>;
+}
+```
+
+Do not create:
+
+```tsx
+function Reports() {
+  return <div>Reports coming soon</div>;
+}
+```
+
+Do not create:
+
+```tsx
+const shipments = [
+  { id: "1", status: "Delivered" }
+];
+```
+
+as the production shipment data source.
+
+Do not create:
+
+```tsx
+const handleSave = () => {
+  toast.success("Saved successfully");
+};
+```
+
+when nothing was actually persisted.
+
+A real Save action must execute the appropriate backend mutation, handle failures, and verify the persisted result.
+
+---
+
+# 14. IMPLEMENTATION PLAN — EXECUTE THE REPAIRS
+
+Do not stop after describing the problems.
+
+Work through the implementation in phases.
+
+## PHASE 0 — Existing Project Audit
+
+Inspect source code, routes, reference images, Convex functions, and current functionality.
+
+Identify actual defects and missing modules.
+
+## PHASE 1 — Landing Page Repair
+
+Reconstruct the landing page using the exact uploaded landing page reference.
+
+Complete navigation, tracking, service descriptions, and real CTA destinations.
+
+## PHASE 2 — Shared Dashboard Design System
+
+Correct:
+
+- Sidebar
+- Header
+- Typography
+- Cards
+- Tables
+- Charts
+- Buttons
+- Tabs
+- Search
+- Filters
+- Detail panels
+- Responsive layouts
+
+Use the Admin reference as the common visual foundation.
+
+## PHASE 3 — Admin Dashboard Completion
+
+Implement the Admin Overview and all existing Admin child-page requirements.
+
+## PHASE 4 — Customer Dashboard Completion
+
+Implement the Customer Overview, warehouse bookings, inventory, dispatch requests, shipping, tracking, billing, notifications, and settings.
+
+## PHASE 5 — Warehouse Dashboard Completion
+
+Implement warehouse operations, receiving, maps, racks, bins, QR labels, putaway, inventory, transfers, picking, cycle counts, and reporting.
+
+## PHASE 6 — Driver Dashboard Completion
+
+Implement assignments, pickups, active shipments, deliveries, package scanning, proof of delivery, history, and notifications.
+
+## PHASE 7 — Shared Business Workflow Integration
+
+Verify that customer, admin, warehouse, and driver operations update the same real records.
+
+## PHASE 8 — Visual Verification
+
+For each page:
+
+- Render the actual page.
+- Capture a screenshot where tooling permits.
+- Compare against the uploaded reference.
+- Correct major visual differences.
+- Recheck responsive layouts.
+
+## PHASE 9 — Security and Production Testing
+
+Verify authorization, tenant isolation, data persistence, business state transitions, and regression stability.
+
+### Execution Instructions
+
+Perform the work in this order, adapting for actual code dependencies.
+
+Do not replace working functionality.
+
+Do not mark a phase complete when its required features remain incomplete.
+
+If a phase is too large for the current execution context, finish a coherent, testable subset, document remaining tasks precisely, and continue in the next execution session without claiming the whole phase is complete.
+
+---
+
+# 15. MANDATORY END-TO-END TESTS
+
+The completed application must pass the following real-world workflow tests.
+
+### Test 1: Landing Page
+
+Check that the landing page visually follows its reference and that all public navigation and service buttons work.
+
+### Test 2: Customer Registration
+
+Create or use a legitimate test account through the configured authentication service.
+
+Verify appropriate customer role access.
+
+### Test 3: Warehouse Booking
+
+Create a storage booking as a customer.
+
+Confirm that authorized warehouse personnel can see the same booking.
+
+### Test 4: Goods Receiving
+
+Receive goods against the booking and confirm actual inventory records.
+
+### Test 5: Warehouse Putaway
+
+Generate real package and location QR codes.
+
+Scan and confirm placement.
+
+Verify the storage location persists in Convex.
+
+### Test 6: Locate Package
+
+Search for the stored package.
+
+Verify that the warehouse map highlights the correct rack and bin.
+
+### Test 7: Shipping Only
+
+Create a shipment without warehouse storage.
+
+Verify that it proceeds through pickup and delivery workflows independently.
+
+### Test 8: Warehouse to Shipping
+
+Request dispatch of stored inventory.
+
+Verify picking, inventory updates, and shipment creation or linkage.
+
+### Test 9: Driver Assignment
+
+Assign a driver to a valid shipment.
+
+Verify that the assignment appears in that driver's account.
+
+### Test 10: Delivery Confirmation
+
+Complete delivery with an authorized proof-of-delivery record.
+
+Verify updates on Customer and Admin dashboards.
+
+### Test 11: Billing
+
+Create or generate a legitimate invoice.
+
+Record or verify payment according to the configured payment process.
+
+Confirm correct invoice status and financial records.
+
+### Test 12: Status Filters
+
+Verify that Pending, In Transit, Delivered, Cancelled, and other status views show only their appropriate records.
+
+### Test 13: Permissions
+
+Attempt unauthorized access across organizations and roles.
+
+Confirm the backend denies access.
+
+### Test 14: Browser Reload
+
+Reload pages after successful mutations.
+
+Verify that committed changes persist.
+
+### Test 15: UI Screenshots
+
+Compare every major implemented dashboard and child page against its relevant reference.
+
+Do not mark visual verification complete if screenshot comparison was not performed.
+
+---
+
+# 16. REQUIRED COMPLETION REPORT
+
+After implementation, return a detailed result.
+
+Use:
+
+| Module | Pages Implemented | Backend Status | UI Reference Followed | Testing Result | Outstanding Issues |
+|---|---|---|---|---|---|
+
+Include separate entries for:
+
+- Landing Page
+- Admin Dashboard
+- Admin Child Pages
+- Customer Dashboard
+- Customer Child Pages
+- Warehouse Dashboard
+- Warehouse Child Pages
+- Driver Dashboard
+- Driver Child Pages
+- Shipping
+- Warehouse Mapping
+- QR & Labels
+- Billing
+- Notifications
+- Analytics
+- Cross-Dashboard Integration
+
+Also include:
+
+1. Actual files changed.
+2. New or modified routes.
+3. New or modified Convex functions.
+4. Database/schema changes.
+5. Features repaired.
+6. Tests executed.
+7. Tests passed.
+8. Tests failed.
+9. Features still incomplete.
+10. Configuration dependencies.
+
+Do not invent successful test results.
+
+---
+
+# 17. FINAL NON-NEGOTIABLE DIRECTIVE
+
+Your previous implementation was incomplete.
+
+I do not want another redesign.
+
+I do not want sidebar labels without functionality.
+
+I do not want a landing page different from the uploaded reference.
+
+I do not want demo data presented as production records.
+
+I do not want duplicate dashboards or disconnected modules.
+
+I want you to **repair the actual existing Swahivo Logistics application**.
+
+You must:
+
+- Follow the uploaded screenshots.
+- Restore and preserve working code.
+- Complete all required dashboard child pages.
+- Implement real page functionality.
+- Connect the real Convex backend.
+- Enforce backend permissions.
+- Connect the workflows between all four dashboards.
+- Test the resulting application.
+- Correct visual differences against references.
+- Report completion accurately.
+
+**A page is not complete because its sidebar label exists.**
+
+**A dashboard is not complete because KPI cards are visible.**
+
+**A system is not complete because buttons show success messages.**
+
+It is complete only when its required workflows actually work and its UI follows the applicable design reference.
+
+START BY INSPECTING YOUR PREVIOUS IMPLEMENTATION.
+
+THEN REPAIR THE LANDING PAGE.
+
+THEN COMPLETE THE DASHBOARDS AND THEIR CHILD PAGES.
+
+THEN VERIFY THE ENTIRE CONNECTED LOGISTICS PLATFORM.
+
+**DO NOT DESIGN BY YOUR OWN VIEW. FOLLOW MY REFERENCE SCREENSHOTS AND IMPLEMENT THE ACTUAL PRODUCT.**
