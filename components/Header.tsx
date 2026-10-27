@@ -45,42 +45,32 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
   const roleInfo = getRoleBadge();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white px-6 shadow-xs">
-      {/* Global Search */}
-      <div className="flex items-center flex-1 max-w-xl">
+    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-slate-200 bg-white px-5 shadow-2xs">
+      {/* Global Search with Ctrl K badge */}
+      <div className="flex items-center flex-1 max-w-lg">
         <div className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search shipments, customers, bookings, or tracking number... (Ctrl + K)"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50/80 py-2 pl-10 pr-4 text-xs text-slate-800 placeholder-slate-400 transition-all focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+            placeholder="Search shipments, customers, bookings, or tracking number..."
+            className="w-full rounded-lg border border-slate-200 bg-slate-50/70 py-1.5 pl-9 pr-14 text-xs text-slate-800 placeholder-slate-400 transition-all focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500"
           />
+          <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-slate-500 shadow-2xs">
+            Ctrl K
+          </kbd>
         </div>
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center space-x-3">
-        {/* Google Maps AI Route Intelligence Button */}
-        {handleOpenAssistant && (
-          <button
-            onClick={handleOpenAssistant}
-            className="flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors shadow-2xs"
-            title="Google Maps Grounded Route Assistant"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-blue-600 animate-pulse" />
-            <span>GIS Route AI</span>
-          </button>
-        )}
-
-
-        {/* Warehouse Selector (visible for Admin & Warehouse) */}
-        {(currentRole === 'admin' || currentRole === 'warehouse_manager') && (
+      <div className="flex items-center space-x-2.5">
+        {/* Facility selector visible only for warehouse manager */}
+        {currentRole === 'warehouse_manager' && (
           <div className="relative">
             <button
               onClick={() => setShowWarehouseMenu(!showWarehouseMenu)}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
             >
               <WarehouseIcon className="h-3.5 w-3.5 text-slate-500" />
               <span>{selectedWarehouse.split(' - ')[0]}</span>
@@ -119,15 +109,16 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
           </div>
         )}
 
-        {/* Notifications Icon with Badge */}
+        {/* Notifications Icon with Badge 5 */}
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors"
+            className="relative flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+            title="Notifications"
           >
             <Bell className="h-4 w-4" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
-              3
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+              5
             </span>
           </button>
 
@@ -135,31 +126,23 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
             <div className="absolute right-0 mt-2 w-80 rounded-xl border border-slate-200 bg-white p-3 shadow-xl z-50">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h4 className="text-xs font-bold text-slate-800">Operational Alerts</h4>
-                <span className="text-[10px] text-blue-600 font-medium">3 New</span>
+                <span className="text-[10px] text-blue-600 font-medium">5 New</span>
               </div>
               <div className="mt-2 space-y-2 text-xs">
                 <div className="flex items-start gap-2.5 p-2 rounded-lg bg-blue-50/60">
                   <span className="mt-0.5 h-2 w-2 rounded-full bg-blue-600 shrink-0" />
                   <div>
-                    <p className="font-semibold text-slate-800">New Storage Booking</p>
-                    <p className="text-[11px] text-slate-500">WHB-2026-0047 received 40 cartons.</p>
-                    <span className="text-[10px] text-slate-400">10 mins ago</span>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2.5 p-2 rounded-lg bg-amber-50/60">
-                  <span className="mt-0.5 h-2 w-2 rounded-full bg-amber-500 shrink-0" />
-                  <div>
-                    <p className="font-semibold text-slate-800">Cycle Count Discrepancy</p>
-                    <p className="text-[11px] text-slate-500">Location R05-L02-B02 reported misplaced item.</p>
-                    <span className="text-[10px] text-slate-400">32 mins ago</span>
+                    <p className="font-semibold text-slate-800">Shipment Status Updated</p>
+                    <p className="text-[11px] text-slate-500">TZL-20261025-001 updated to In Transit</p>
+                    <span className="text-[10px] text-slate-400">15 mins ago</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5 p-2 rounded-lg bg-emerald-50/60">
                   <span className="mt-0.5 h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
                   <div>
-                    <p className="font-semibold text-slate-800">Delivery Confirmed</p>
-                    <p className="text-[11px] text-slate-500">PKG-1042 marked delivered by Ali Hassan.</p>
-                    <span className="text-[10px] text-slate-400">1 hour ago</span>
+                    <p className="font-semibold text-slate-800">Route Started</p>
+                    <p className="text-[11px] text-slate-500">Driver Ali Hassan started route to Zanzibar</p>
+                    <span className="text-[10px] text-slate-400">28 mins ago</span>
                   </div>
                 </div>
               </div>
@@ -168,14 +151,14 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
         </div>
 
         {/* Messaging shortcut */}
-        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
+        <button className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 transition-colors" title="Messages">
           <MessageSquare className="h-4 w-4" />
         </button>
 
-        {/* Language selector */}
-        <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-600">
-          <Globe className="h-3.5 w-3.5 text-slate-500" />
-          <span className="font-medium">English</span>
+        {/* Language selector (UK English) */}
+        <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-700 font-medium">
+          <span className="text-sm">🇬🇧</span>
+          <span>English</span>
           <ChevronDown className="h-3 w-3 text-slate-400" />
         </div>
 
@@ -183,14 +166,14 @@ export function Header({ onOpenAiAssistant, onOpenMaps }: HeaderProps) {
         <div className="relative">
           <button
             onClick={() => setShowRoleMenu(!showRoleMenu)}
-            className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-slate-100 transition-colors"
+            className="flex items-center gap-2 rounded-lg py-1 px-1.5 hover:bg-slate-100 transition-colors"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-xs">
-              {roleInfo.initials}
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white shadow-xs">
+              AD
             </div>
             <div className="hidden md:flex flex-col text-left">
-              <span className="text-xs font-bold text-slate-800">{roleInfo.name}</span>
-              <span className="text-[10px] text-slate-500">{roleInfo.title}</span>
+              <span className="text-xs font-bold text-slate-900 leading-tight">Admin User</span>
+              <span className="text-[10px] text-slate-400 leading-none">Super Admin</span>
             </div>
             <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
           </button>

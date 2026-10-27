@@ -61,76 +61,46 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
   // Styling helpers
   const getItemClasses = (tabId: string) => {
     const isActive = activeTab === tabId;
-    return `group flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+    return `group flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium transition-all ${
       isActive
-        ? 'bg-blue-600 text-white font-semibold shadow-xs'
-        : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+        ? 'bg-[#1677ff] text-white font-semibold shadow-xs'
+        : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
     }`;
   };
 
   const getSubItemClasses = (tabId: string) => {
     const isActive = activeTab === tabId;
-    return `flex w-full items-center gap-2 rounded-md py-1.5 pl-8 pr-3 text-xs transition-colors ${
+    return `flex w-full items-center gap-2.5 rounded-md py-1.5 pl-6 pr-2.5 text-[11px] transition-colors ${
       isActive
-        ? 'bg-blue-600/90 text-white font-semibold'
-        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+        ? 'bg-[#1677ff]/90 text-white font-semibold'
+        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
     }`;
   };
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-[235px] flex-col bg-[#0b132b] text-white select-none">
-      {/* Brand Header with Authentic SWAHIVO Light Logo */}
-      <div className="flex h-16 items-center border-b border-slate-800/80 px-4">
-        <button
-          onClick={() => {
-            setCurrentRole('landing');
-          }}
-          className="relative h-8 w-44 hover:opacity-90 transition text-left"
-          title="Return to Public Landing Page"
-        >
-          <Image
-            src="/assets/aistudio/light_bd56867f.png"
-            alt="SWAHIVO Logistics OS"
-            fill
-            className="object-contain object-left"
-            priority
-          />
-        </button>
-      </div>
-
-      {/* Role Indicator Bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800/60 text-[11px] text-slate-300">
-        <span className="font-semibold truncate">
-          {currentRole === 'admin' && 'Admin Workspace'}
-          {currentRole === 'warehouse_manager' && 'Warehouse Facility'}
-          {currentRole === 'customer' && 'Customer Portal'}
-          {currentRole === 'driver' && 'Driver Portal'}
-          {currentRole === 'landing' && 'Public Website'}
-        </span>
-        <button
-          onClick={() => {
-            if (currentRole === 'admin') setCurrentRole('warehouse_manager');
-            else if (currentRole === 'warehouse_manager') setCurrentRole('customer');
-            else if (currentRole === 'customer') setCurrentRole('driver');
-            else setCurrentRole('admin');
-          }}
-          className="text-blue-400 hover:text-blue-300 text-[10px] font-bold underline transition"
-        >
-          Switch
-        </button>
+    <aside className="fixed inset-y-0 left-0 z-40 flex w-[220px] flex-col bg-[#0b132b] text-white select-none border-r border-slate-900">
+      {/* Brand Header with TZLogistics Logo */}
+      <div className="flex h-14 items-center border-b border-slate-800/80 px-3.5 gap-2.5">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600 text-white shrink-0 shadow-xs">
+          <Boxes className="h-4 w-4" />
+        </div>
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm font-bold text-white tracking-tight leading-none truncate">
+            TZLogistics
+          </span>
+          <span className="text-[9.5px] text-slate-400 font-normal leading-tight mt-0.5 truncate">
+            Logistics Management System
+          </span>
+        </div>
       </div>
 
       {/* Navigation Links (Scrollable) */}
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
+      <div className="flex-1 overflow-y-auto px-2.5 py-2.5 space-y-0.5">
         {/* ========================================================= */}
         {/* ================= ADMIN NAVIGATION ====================== */}
         {/* ========================================================= */}
         {currentRole === 'admin' && (
           <>
-            <div className="pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              MAIN
-            </div>
-
             <button onClick={() => setActiveTab('dashboard')} className={getItemClasses('dashboard')}>
               <div className="flex items-center gap-2.5">
                 <LayoutDashboard className="h-4 w-4" />
@@ -138,7 +108,7 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               </div>
             </button>
 
-            <div className="pt-3 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <div className="pt-3 pb-1 px-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
               OPERATIONS
             </div>
 
@@ -174,7 +144,7 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
             <div>
               <button
                 onClick={() => setWarehouseOpen(!warehouseOpen)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800/60"
+                className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800/60"
               >
                 <div className="flex items-center gap-2.5">
                   <Warehouse className="h-4 w-4" />
@@ -184,29 +154,37 @@ export function Sidebar({ activeTab: propActiveTab, setActiveTab: propSetActiveT
               </button>
 
               {warehouseOpen && (
-                <div className="mt-1 space-y-0.5">
+                <div className="mt-0.5 space-y-0.5">
                   <button onClick={() => setActiveTab('warehouse-overview')} className={getSubItemClasses('warehouse-overview')}>
+                    <Warehouse className="h-3.5 w-3.5 text-slate-400" />
                     <span>Warehouses</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-bookings')} className={getSubItemClasses('warehouse-bookings')}>
+                    <Box className="h-3.5 w-3.5 text-slate-400" />
                     <span>Storage Bookings</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-receiving')} className={getSubItemClasses('warehouse-receiving')}>
+                    <Download className="h-3.5 w-3.5 text-slate-400" />
                     <span>Receiving</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-overview')} className={getSubItemClasses('warehouse-inventory')}>
+                    <Boxes className="h-3.5 w-3.5 text-slate-400" />
                     <span>Inventory</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getSubItemClasses('warehouse-transfers-picking')}>
+                    <Truck className="h-3.5 w-3.5 text-slate-400" />
                     <span>Warehouse &rarr; Shipping</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-transfers-picking')} className={getSubItemClasses('warehouse-movements')}>
+                    <ArrowRightLeft className="h-3.5 w-3.5 text-slate-400" />
                     <span>Stock Movements</span>
                   </button>
                   <button onClick={() => setActiveTab('billing')} className={getSubItemClasses('warehouse-rates')}>
+                    <CreditCard className="h-3.5 w-3.5 text-slate-400" />
                     <span>Storage Rates</span>
                   </button>
                   <button onClick={() => setActiveTab('warehouse-racks-bins')} className={getSubItemClasses('warehouse-racks-bins')}>
+                    <Grid3X3 className="h-3.5 w-3.5 text-slate-400" />
                     <span>Locations &amp; Bins</span>
                   </button>
                 </div>

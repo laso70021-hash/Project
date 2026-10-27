@@ -209,14 +209,14 @@ function MainAppShell() {
       {/* Dark Navy Persistent Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Main Content Area (Offset by 235px sidebar width) */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden pl-[235px]">
+      {/* Main Content Area (Offset by 220px sidebar width) */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden pl-[220px]">
         {/* Global Operational Header */}
         <Header onOpenMaps={() => setIsMapsOpen(true)} />
 
         {/* Scrollable Dashboard Workspace */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">{renderActiveModule()}</div>
+        <main className="flex-1 overflow-y-auto bg-slate-100/90 p-3.5 sm:p-4">
+          <div className="w-full">{renderActiveModule()}</div>
         </main>
       </div>
 

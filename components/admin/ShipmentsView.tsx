@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store-context';
-import { Shipment } from '@/lib/types';
+import { Shipment, ShipmentStatus } from '@/lib/types';
 import { RouteMap } from '@/components/common/RouteMap';
 import {
   Package,
@@ -25,6 +25,7 @@ import {
   Edit,
   ExternalLink,
   Phone,
+  ChevronDown,
 } from 'lucide-react';
 
 interface ShipmentsViewProps {
@@ -40,6 +41,42 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
   const [selectedService, setSelectedService] = useState('All');
   const [detailTab, setDetailTab] = useState<'overview' | 'timeline' | 'items' | 'documents'>('overview');
   const [isCopied, setIsCopied] = useState(false);
+
+  // Status Change State
+  const [newStatus, setNewStatus] = useState<ShipmentStatus>(selectedShipment?.status || 'In Transit');
+  const [statusNote, setStatusNote] = useState('');
+  const [statusUpdatedToast, setStatusUpdatedToast] = useState(false);
+
+  React.useEffect(() => {
+    if (selectedShipment?.status) {
+      setNewStatus(selectedShipment.status);
+    }
+  }, [selectedShipment?.id, selectedShipment?.status]);
+
+  const handleApplyStatus = (statusToApply: ShipmentStatus, customNote?: string) => {
+    if (!selectedShipment) return;
+    const note = customNote || statusNote || `Status updated to ${statusToApply}`;
+    updateShipmentStatus(selectedShipment.id, statusToApply, note);
+    setSelectedShipment(prev => ({
+      ...prev,
+      status: statusToApply,
+      events: [
+        ...(prev.events || []),
+        {
+          id: `e-${Date.now()}`,
+          timestamp: new Date().toLocaleString(),
+          title: statusToApply,
+          location: statusToApply === 'Delivered' ? prev.destination : 'Operational Transit Hub',
+          performedBy: 'Operations Staff',
+          completed: true,
+          notes: note,
+        },
+      ],
+    }));
+    setStatusNote('');
+    setStatusUpdatedToast(true);
+    setTimeout(() => setStatusUpdatedToast(false), 3000);
+  };
 
   // Status Filter Counts
   const countAll = shipments.length;
@@ -248,23 +285,42 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
                         <td className="py-2.5 px-3 font-medium text-slate-800">
                           {s.weightKg} kg
                         </td>
-                        <td className="py-2.5 px-3">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold ${
+                        <td className="py-2 px-3" onClick={(e) => e.stopPropagation()}>
+                          <select
+                            value={s.status}
+                            onChange={(e) => {
+                              const updated = e.target.value as ShipmentStatus;
+                              updateShipmentStatus(s.id, updated, `Status updated to ${updated} from table`);
+                              if (selectedShipment.id === s.id) {
+                                setSelectedShipment(prev => ({ ...prev, status: updated }));
+                              }
+                            }}
+                            className={`cursor-pointer rounded-full px-2 py-0.5 text-[9.5px] font-bold border transition focus:outline-hidden ${
                               s.status === 'Delivered'
-                                ? 'bg-emerald-50 text-emerald-700'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
                                 : s.status === 'In Transit'
-                                ? 'bg-blue-50 text-blue-700'
+                                ? 'bg-blue-50 text-blue-700 border-blue-300'
                                 : s.status === 'Out for Delivery'
-                                ? 'bg-amber-50 text-amber-700'
+                                ? 'bg-amber-50 text-amber-700 border-amber-300'
+                                : s.status === 'Picked Up'
+                                ? 'bg-purple-50 text-purple-700 border-purple-300'
+                                : s.status === 'Pending Pickup'
+                                ? 'bg-sky-50 text-sky-700 border-sky-300'
                                 : s.status === 'Cancelled'
-                                ? 'bg-red-50 text-red-700'
-                                : 'bg-slate-100 text-slate-700'
+                                ? 'bg-red-50 text-red-700 border-red-300'
+                                : 'bg-slate-100 text-slate-700 border-slate-300'
                             }`}
+                            title="Click to change package status"
                           >
-                            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                            {s.status}
-                          </span>
+                            <option value="Pending Pickup">⏳ Pending Pickup</option>
+                            <option value="Assigned">👤 Assigned</option>
+                            <option value="Picked Up">🟣 Picked Up</option>
+                            <option value="In Transit">🔵 In Transit</option>
+                            <option value="Out for Delivery">🟠 Out for Delivery</option>
+                            <option value="Delivered">🟢 Delivered</option>
+                            <option value="On Hold">⏸️ On Hold</option>
+                            <option value="Cancelled">🔴 Cancelled</option>
+                          </select>
                         </td>
                         <td className="py-2.5 px-3 font-medium text-slate-800 text-[11px]">
                           {s.assignedDriverName || '-'}
@@ -298,15 +354,6 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-[10px] font-extrabold ${
-                  selectedShipment.status === 'Delivered'
-                    ? 'bg-emerald-100 text-emerald-800'
-                    : 'bg-blue-100 text-blue-800'
-                }`}
-              >
-                {selectedShipment.status}
-              </span>
               <span className="text-sm font-extrabold text-slate-900 font-mono">
                 {selectedShipment.trackingNumber}
               </span>
@@ -320,10 +367,40 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
               {isCopied && <span className="text-[10px] text-emerald-600">Copied!</span>}
             </div>
 
-            <button className="flex items-center gap-1 rounded-md border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-              <Edit className="h-3 w-3" />
-              <span>Edit</span>
-            </button>
+            {/* Quick Status Select */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 font-semibold uppercase">Status:</span>
+              <select
+                value={selectedShipment.status}
+                onChange={(e) => {
+                  const val = e.target.value as ShipmentStatus;
+                  handleApplyStatus(val);
+                }}
+                className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold border cursor-pointer focus:outline-hidden ${
+                  selectedShipment.status === 'Delivered'
+                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    : selectedShipment.status === 'In Transit'
+                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    : selectedShipment.status === 'Out for Delivery'
+                    ? 'bg-amber-100 text-amber-800 border-amber-300'
+                    : selectedShipment.status === 'Picked Up'
+                    ? 'bg-purple-100 text-purple-800 border-purple-300'
+                    : selectedShipment.status === 'Cancelled'
+                    ? 'bg-red-100 text-red-800 border-red-300'
+                    : 'bg-slate-100 text-slate-800 border-slate-300'
+                }`}
+                title="Select to change shipment status"
+              >
+                <option value="Pending Pickup">⏳ Pending Pickup</option>
+                <option value="Assigned">👤 Assigned</option>
+                <option value="Picked Up">🟣 Picked Up</option>
+                <option value="In Transit">🔵 In Transit</option>
+                <option value="Out for Delivery">🟠 Out for Delivery</option>
+                <option value="Delivered">🟢 Delivered</option>
+                <option value="On Hold">⏸️ On Hold</option>
+                <option value="Cancelled">🔴 Cancelled</option>
+              </select>
+            </div>
           </div>
 
           {/* Details Tabs */}
@@ -423,8 +500,101 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
                 </div>
               </div>
 
-              {/* Quick Actions matching screenshot */}
-              <div className="grid grid-cols-3 gap-2 pt-1">
+              {/* Dedicated Status Change Management Card */}
+              <div className="rounded-xl border-2 border-blue-200/80 bg-blue-50/40 p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <RefreshCw className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="text-xs font-bold text-slate-900">Change Package Status</span>
+                  </div>
+                  {statusUpdatedToast && (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      ✓ Status updated!
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-600 block mb-1">Select Status</label>
+                    <select
+                      value={newStatus}
+                      onChange={(e) => setNewStatus(e.target.value as ShipmentStatus)}
+                      className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-bold text-slate-800 shadow-2xs focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="Pending Pickup">⏳ Pending Pickup</option>
+                      <option value="Assigned">👤 Assigned</option>
+                      <option value="Picked Up">🟣 Picked Up</option>
+                      <option value="In Transit">🔵 In Transit</option>
+                      <option value="Out for Delivery">🟠 Out for Delivery</option>
+                      <option value="Delivered">🟢 Delivered</option>
+                      <option value="On Hold">⏸️ On Hold</option>
+                      <option value="Cancelled">🔴 Cancelled</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-600 block mb-1">Checkpoint Note (Optional)</label>
+                    <input
+                      type="text"
+                      value={statusNote}
+                      onChange={(e) => setStatusNote(e.target.value)}
+                      placeholder="e.g. Arrived at transit hub"
+                      className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs text-slate-800 shadow-2xs placeholder-slate-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Presets for fast 1-click status change */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Quick Presets:</span>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyStatus('In Transit', 'Package departed origin; currently in transit')}
+                    className="px-2 py-1 rounded-md bg-blue-100 hover:bg-blue-200 text-blue-800 text-[10px] font-bold transition"
+                  >
+                    🔵 In Transit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyStatus('Out for Delivery', 'Package loaded on delivery vehicle for final mile')}
+                    className="px-2 py-1 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 text-[10px] font-bold transition"
+                  >
+                    🟠 Out for Delivery
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyStatus('Delivered', 'Package confirmed delivered to consignee')}
+                    className="px-2 py-1 rounded-md bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[10px] font-bold transition"
+                  >
+                    🟢 Delivered
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyStatus('Picked Up', 'Driver verified and picked up package from sender')}
+                    className="px-2 py-1 rounded-md bg-purple-100 hover:bg-purple-200 text-purple-800 text-[10px] font-bold transition"
+                  >
+                    🟣 Picked Up
+                  </button>
+                </div>
+
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-500">
+                    Current: <strong className="text-slate-800">{selectedShipment.status}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyStatus(newStatus)}
+                    className="flex items-center gap-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <span>Apply &amp; Update History</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Actions (Print Label / Waybill) */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
                 <button
                   onClick={() => alert(`Printing Shipping Label for ${selectedShipment.trackingNumber}...`)}
                   className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-50 shadow-2xs"
@@ -437,18 +607,7 @@ export function ShipmentsView({ onNavigateToCreate }: ShipmentsViewProps) {
                   className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-50 shadow-2xs"
                 >
                   <FileText className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Waybill</span>
-                </button>
-                <button
-                  onClick={() => {
-                    const nextStatus = selectedShipment.status === 'Pending Pickup' ? 'In Transit' : selectedShipment.status === 'In Transit' ? 'Out for Delivery' : 'Delivered';
-                    updateShipmentStatus(selectedShipment.id, nextStatus);
-                    setSelectedShipment(prev => ({ ...prev, status: nextStatus }));
-                  }}
-                  className="flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2 text-[11px] font-bold text-white hover:bg-blue-700 shadow-xs"
-                >
-                  <RefreshCw className="h-3.5 w-3.5" />
-                  <span>Advance Status</span>
+                  <span>Generate Waybill</span>
                 </button>
               </div>
             </div>

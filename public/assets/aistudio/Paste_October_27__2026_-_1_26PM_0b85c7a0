@@ -1,0 +1,1618 @@
+# SWAHIVO LOGISTICS OS
+## MASTER PROJECT REPAIR — REAL SUPABASE BACKEND, MULTI-COMPANY SAAS & FULL DASHBOARD FUNCTIONALITY
+
+### MANDATORY: MODIFY THE EXISTING APPLICATION — DO NOT REBUILD
+
+You are a senior full-stack engineer, logistics SaaS architect, Supabase/PostgreSQL engineer, multi-tenant security specialist, document-generation engineer, UI reconstruction engineer, and QA lead.
+
+My existing Swahivo Logistics OS application has already been partially developed. However, many features are merely navigation labels, some pages are incomplete, and some workflows use simulated or hardcoded information.
+
+Your assignment is to **repair, complete, and upgrade the actual existing application**.
+
+This is a production-oriented full-stack implementation task.
+
+**DO NOT GENERATE A NEW APPLICATION.**
+
+**DO NOT CREATE ANOTHER DEMO.**
+
+**DO NOT GENERATE UI IMAGES INSTEAD OF APPLICATION CODE.**
+
+**DO NOT REPLACE MY SUPPLIED REFERENCE DESIGNS.**
+
+**DO NOT STOP AFTER CREATING SIDEBAR LABELS.**
+
+Your work must modify the real source files, connect functional Supabase backend operations, implement company-based user accounts, and ensure all dashboards operate on the same authoritative database.
+
+---
+
+# 1. MANDATORY TECHNOLOGY STACK
+
+Maintain the existing frontend architecture:
+
+| Layer | Technology |
+|---|---|
+| Build system | Vite |
+| Framework | React |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Components | shadcn/ui |
+| Authentication | Supabase Auth |
+| Database | Supabase PostgreSQL |
+| Data authorization | PostgreSQL Row Level Security |
+| File storage | Supabase Storage |
+| Backend business logic | PostgreSQL functions and Supabase Edge Functions |
+| Realtime | Supabase Realtime where appropriate |
+| Icons | Lucide React |
+| Charts | Existing library or Recharts |
+| Warehouse map | react-konva + konva |
+| QR generation | qrcode |
+| QR scanning | @zxing/browser |
+| Printing | react-to-print |
+| Testing | Vitest, Playwright, and database RLS tests |
+
+**SUPABASE IS NOW THE REQUIRED BACKEND.**
+
+An earlier version of this project used Convex. You must inspect the current source code to determine which backend is actually configured.
+
+If the project contains real Convex records:
+
+1. Identify every active Convex collection, query, mutation, and integration.
+2. Determine which records must be preserved.
+3. Back up existing data before migration.
+4. Map existing IDs, ownership, relationships, and statuses to PostgreSQL.
+5. Create compatible Supabase migrations.
+6. Import and validate the preserved records.
+7. Update frontend services to use Supabase.
+8. Test equivalent workflows against Supabase.
+9. Retire Convex production dependencies only after migration and verification.
+
+Do not delete live data or replace real records with examples.
+
+Do not run Convex and Supabase as two competing production sources of truth.
+
+If the application is already connected to Supabase, repair that integration rather than creating a new one.
+
+---
+
+# 2. FIRST TASK — INSPECT AND REPAIR WHAT ALREADY EXISTS
+
+Before implementing changes, examine the actual source code.
+
+Inspect:
+
+- `package.json`
+- Application entry points
+- Routing configuration
+- Authentication contexts
+- Role management
+- Admin dashboard
+- Customer dashboard
+- Warehouse dashboard
+- Driver dashboard
+- Sidebar navigation
+- Existing forms
+- Existing services
+- Existing API integration
+- Database schema
+- Database migrations
+- Storage integration
+- Financial modules
+- Shipping document generation
+- Reports
+- Settings
+- Existing tests
+
+Create a feature audit using:
+
+| Feature | UI Exists | Route Works | Real Backend | CRUD Works | Reference Matched | Status |
+|---|---|---|---|---|---|---|
+
+Classify features as:
+
+- Complete and verified
+- Partially complete
+- Broken
+- UI-only
+- Missing
+- Blocked
+- Untested
+
+**Do not stop after presenting the audit. Proceed to fixing the application.**
+
+Preserve working code and replace only defective or incomplete implementations.
+
+---
+
+# 3. REMOVE ALL SIMULATED AND HARDCODED APPLICATION DATA
+
+This is a critical requirement.
+
+Search the entire project for:
+
+- Fake users
+- Mock admin sessions
+- Hardcoded passwords
+- Demo customer arrays
+- Fake warehouses
+- Mock shipment records
+- Random dashboard statistics
+- Fake revenue values
+- Fake driver assignments
+- Simulated package tracking
+- Mock invoice payments
+- Hardcoded warehouse occupancy
+- Decorative QR codes
+- localStorage-based business records
+- Fake mutation success responses
+- Simulated notification events
+- Fallback data returned after database errors
+
+Remove production dependencies on these implementations.
+
+Do not remove legitimate user interface examples, isolated test fixtures, or static metadata such as country names and status definitions.
+
+## SINGLE SOURCE OF TRUTH
+
+Every real-world business entity must have one authoritative record or clearly defined canonical ownership.
+
+For example:
+
+**One shipment:**
+
+A shipment created by a customer must be the same shipment visible to Admin, Warehouse, and Driver users.
+
+**One package:**
+
+A registered package must retain its canonical ID across receiving, putaway, storage, picking, dispatch, and delivery.
+
+**One customer:**
+
+The customer record must be reused for bookings, shipments, invoices, and communications.
+
+**One payment:**
+
+A verified payment must update the related ledger and invoice without creating unrelated duplicate payments.
+
+**One company:**
+
+Company profile information must be stored centrally and reused across dashboards and business documents.
+
+Use normalized PostgreSQL relationships, foreign keys, uniqueness constraints, and appropriate database views or reporting queries.
+
+Avoid duplicating complete business entities separately for each dashboard.
+
+## STRICT RULES
+
+Never display random numbers as actual business metrics.
+
+Never report an INSERT as successful without a successful database operation.
+
+Never silently replace a failed database query with fabricated records.
+
+Never show a shipment as delivered unless its authoritative status has been updated through the appropriate workflow.
+
+Never generate fake tracking coordinates.
+
+Never mark a payment as completed without a valid confirmed or authorized manual verification event.
+
+If no data exists, show an appropriate empty state.
+
+---
+
+# 4. IMPLEMENT REAL SUPABASE AUTHENTICATION
+
+Remove fake login systems, hardcoded sessions, and preset accounts.
+
+Use Supabase Authentication.
+
+## Required Authentication Features
+
+- User registration
+- Email/password login
+- Email verification according to configured policies
+- Password reset
+- Logout
+- Session restoration
+- Protected routes
+- Authenticated profile loading
+- Account status management
+- Role-based access
+- Invitation acceptance
+- Secure session handling
+- Optional MFA where supported and configured
+
+Each real person must have their own Supabase Auth user ID.
+
+Do not allow multiple employees to share a company's login credentials.
+
+Do not identify an authenticated user merely by storing an email address or role in localStorage.
+
+Use the actual authenticated user's ID when creating or modifying owned records.
+
+## LOGIN DESTINATION
+
+After login:
+
+1. Authenticate the user with Supabase.
+2. Retrieve their profile.
+3. Retrieve their active company memberships.
+4. Determine their authorized roles.
+5. Select their active company context.
+6. Route them to the correct dashboard.
+
+Examples:
+
+Platform Super Admin → Platform administration.
+
+Company Owner/Admin → Company administrative dashboard.
+
+Warehouse Manager → Warehouse operations dashboard.
+
+Warehouse Staff → Authorized warehouse operations.
+
+Driver → Driver dashboard.
+
+Customer → Customer dashboard.
+
+If a person belongs to multiple companies, provide a secure company switcher.
+
+The active company must be validated server-side for every relevant operation.
+
+Do not rely on a frontend-provided company ID alone.
+
+---
+
+# 5. MULTI-COMPANY SAAS ARCHITECTURE — ABSOLUTELY ESSENTIAL
+
+Swahivo Logistics OS is a SaaS product used by multiple independent logistics businesses.
+
+It is NOT a single logistics company application.
+
+For example:
+
+**Company A: Zanzibar Logistics Ltd**
+
+- Own warehouses
+- Own employees
+- Own drivers
+- Own customers
+- Own shipments
+- Own invoices
+- Own branding
+
+**Company B: Dar Freight Solutions**
+
+- Different warehouses
+- Different employees
+- Different drivers
+- Different customers
+- Different shipments
+- Different invoices
+- Different branding
+
+Both companies use the same Swahivo application infrastructure.
+
+However, their private business data must remain isolated.
+
+## MULTI-TENANT OWNERSHIP
+
+Use a canonical company/organization entity.
+
+Business tables must be company-scoped where appropriate.
+
+Examples:
+
+- Warehouses belong to organizations.
+- Employees belong to organizations through memberships.
+- Drivers belong to authorized organizations or provider relationships.
+- Shipments have defined owning and participating organizations.
+- Invoices have an issuing organization and customer relationship.
+- Documents belong to the issuing organization.
+- Branding settings belong to an organization.
+- Storage locations belong to a company's warehouses.
+- Inventory is linked to its legal/operational owner and warehouse custodian.
+
+Do not implement tenant separation merely by filtering records in React.
+
+Use database-level RLS and validated business operations.
+
+---
+
+# 6. COMPANY REGISTRATION AND ONBOARDING
+
+When a business registers on Swahivo Logistics OS, it must be able to create a company account.
+
+## Step 1 — User Registration
+
+The person creates an actual Supabase Auth account.
+
+## Step 2 — Company Setup
+
+Collect:
+
+- Registered company name
+- Trading/business name
+- Company email
+- Business phone
+- Country
+- Region
+- City
+- Physical address
+- Postal address
+- Company registration number
+- Relevant tax identification number
+- Business website
+- Business description
+- Business category
+- Time zone
+- Base currency
+
+Use country-specific field labels where applicable.
+
+For example, Tanzania may use TIN and applicable VAT registration details.
+
+Do not invent tax registration numbers.
+
+## Step 3 — Company Branding
+
+Allow the company to:
+
+- Upload logo
+- Replace logo
+- Remove logo
+- Configure document header
+- Configure document footer
+- Set company contact details
+- Set document accent color within a controlled template
+- Configure invoice numbering
+- Configure quotation numbering
+- Configure receipt numbering
+- Configure delivery-note numbering
+- Configure package-label branding
+
+## Step 4 — Create Company Workspace
+
+Create the organization and assign the registering user an authorized owner membership through a secure backend operation.
+
+Do not allow users to assign themselves Super Admin privileges.
+
+## Step 5 — Add Company Employees
+
+The Company Owner can invite staff and assign permitted roles.
+
+## Step 6 — Configure Operations
+
+Company can create:
+
+- Warehouses
+- Branches
+- Storage zones
+- Rates
+- Vehicles
+- Drivers
+- Services
+- Business documents
+- Payment instructions
+
+Company setup must persist to Supabase.
+
+---
+
+# 7. COMPANY EMPLOYEE AND ROLE MANAGEMENT
+
+This is essential to the SaaS architecture.
+
+A company owner must be able to add and manage employees under their company account.
+
+## Supported Roles
+
+### Platform-Level Roles
+
+**Super Admin**
+
+Authorized Swahivo platform administration and cross-tenant oversight.
+
+### Company-Level Roles
+
+**Company Owner**
+
+Company membership, settings, branding, billing, and operational administration.
+
+**Company Admin**
+
+Permitted company-wide management.
+
+**Operations Manager**
+
+Shipment coordination, dispatch, assignments, and exception handling.
+
+**Warehouse Manager**
+
+Warehouse configuration, inventory, receiving, and staff supervision.
+
+**Warehouse Staff**
+
+Authorized receiving, scanning, putaway, picking, and counting.
+
+**Driver**
+
+Assigned pickups, deliveries, scanning, and proof-of-delivery actions.
+
+**Finance Officer**
+
+Invoices, quotations, receipts, financial reports, and authorized reconciliation.
+
+**Customer Support**
+
+Customer records, support issues, and authorized shipment information.
+
+**Customer**
+
+Access only to their own permitted bookings, inventory, shipments, and invoices.
+
+Use role permissions rather than hardcoding access solely from role names.
+
+## COMPANY STAFF INVITATION WORKFLOW
+
+Company Owner/Admin:
+
+1. Opens Employees & Permissions.
+2. Clicks Invite Employee.
+3. Enters the employee's email.
+4. Selects a company role.
+5. Selects any relevant warehouse or branch scope.
+6. Sends invitation.
+7. Employee receives an invitation.
+8. Employee signs up or logs into their existing account.
+9. Employee accepts the invitation.
+10. Backend verifies invitation validity.
+11. Company membership is created.
+12. Employee receives the appropriate dashboard access.
+
+Use secure server-side invitation processing with expiration and single-use acceptance.
+
+Do not put service-role keys in the frontend.
+
+Do not create fake employee accounts.
+
+Do not allow employees to gain permissions by modifying frontend request parameters.
+
+## EMPLOYEE MANAGEMENT
+
+The company must be able to:
+
+- Invite employee
+- Resend invitation
+- Cancel invitation
+- Assign role
+- Change role
+- Assign warehouse
+- Assign branch
+- Activate/deactivate membership
+- Revoke access
+- Review activity
+- View assigned responsibilities
+
+Prevent the accidental removal of the last authorized company owner without a controlled ownership transfer.
+
+## COMPANY AND WAREHOUSE SCOPE
+
+Example:
+
+A company owns three warehouses.
+
+Warehouse Manager A is assigned Warehouse 1.
+
+Warehouse Manager B is assigned Warehouse 2.
+
+Warehouse Staff C works in Warehouses 1 and 3.
+
+Their access must follow their actual assignments.
+
+A manager assigned only Warehouse 1 must not automatically gain access to restricted records in Warehouse 2.
+
+---
+
+# 8. PROPOSED SUPABASE DATABASE ARCHITECTURE
+
+Inspect and reuse existing compatible tables first.
+
+Create or extend the following only where necessary.
+
+## A. IDENTITY AND ORGANIZATIONS
+
+`profiles`
+
+- id (Supabase Auth user UUID)
+- full_name
+- phone
+- avatar_path
+- account_status
+- created_at
+
+`organizations`
+
+- id
+- legal_name
+- trading_name
+- registration_number
+- tax_identification_number
+- vat_registration_number
+- country_code
+- region
+- city
+- address
+- postal_address
+- email
+- phone
+- website
+- base_currency
+- timezone
+- owner_id
+- status
+- created_at
+
+`organization_memberships`
+
+- id
+- organization_id
+- user_id
+- role_id
+- status
+- joined_at
+
+`organization_invitations`
+
+- id
+- organization_id
+- email
+- role_id
+- warehouse_scope
+- branch_scope
+- invitation_status
+- expires_at
+- accepted_at
+
+`roles`
+
+`permissions`
+
+`role_permissions`
+
+`membership_scopes`
+
+Adapt the model to the existing schema without duplicating tables unnecessarily.
+
+A single user may have memberships in multiple organizations.
+
+A customer may also be an employee of a company.
+
+Do not force one global role per user if this would break valid workflows.
+
+## B. COMPANY BRANDING
+
+`organization_branding`
+
+- id
+- organization_id
+- logo_storage_path
+- logo_dark_storage_path
+- logo_light_storage_path
+- document_header
+- document_footer
+- accent_color
+- support_email
+- support_phone
+- website
+- document_notes
+- updated_at
+
+`organization_payment_details`
+
+- organization_id
+- authorized bank/payment instructions
+- beneficiary name
+- bank account details where applicable
+- mobile money instructions
+- currency
+- status
+
+Protect financial settings through restricted permissions and audited changes.
+
+## C. OPERATIONAL DATA
+
+Reuse or extend:
+
+`warehouses`
+
+`warehouse_branches`
+
+`warehouse_locations`
+
+`warehouse_maps`
+
+`warehouse_racks`
+
+`warehouse_bins`
+
+`storage_bookings`
+
+`packages`
+
+`inventory`
+
+`package_movements`
+
+`shipments`
+
+`shipment_items`
+
+`shipment_events`
+
+`pickup_tasks`
+
+`delivery_tasks`
+
+`driver_assignments`
+
+`drivers`
+
+`vehicles`
+
+`transporters`
+
+`customers`
+
+`customer_contacts`
+
+`notifications`
+
+`audit_logs`
+
+## D. FINANCIAL RECORDS
+
+Reuse or extend:
+
+`quotes`
+
+`quote_items`
+
+`proforma_invoices`
+
+`invoices`
+
+`invoice_items`
+
+`payments`
+
+`payment_allocations`
+
+`receipts`
+
+`credit_notes`
+
+`service_rates`
+
+`storage_charges`
+
+`shipping_charges`
+
+`financial_ledger_entries`
+
+## E. DOCUMENT SYSTEM
+
+`document_templates`
+
+`document_sequences`
+
+`generated_documents`
+
+`document_versions`
+
+`document_events`
+
+Store:
+
+- Organization ID
+- Document type
+- Related business record
+- Document number
+- Issuing company
+- Recipient
+- Template version
+- Rendered storage path
+- Issued timestamp
+- Issuer
+- Status
+- Company snapshot
+- Financial snapshot where applicable
+
+Use database-generated UUIDs and appropriate primary/foreign keys.
+
+Use unique constraints for organization-scoped identifiers and financial document numbering.
+
+Implement indexes for organization, membership, warehouse, shipment, invoice, customer, and status lookups.
+
+---
+
+# 9. SUPABASE ROW LEVEL SECURITY — STRICT
+
+Enable RLS on all exposed business tables.
+
+Configure appropriate grants and policies.
+
+## REQUIRED PRINCIPLE
+
+A user may access a private record only if they have the necessary relationship and permissions.
+
+Examples:
+
+**Company A admin**
+
+Can manage Company A's authorized resources.
+
+Cannot access Company B's private business records.
+
+**Warehouse Manager**
+
+Can access only permitted warehouse records within their active company.
+
+**Driver**
+
+Can read appropriate assigned shipment information and update permitted milestones.
+
+Cannot modify company-wide billing settings.
+
+**Finance Officer**
+
+Can manage authorized financial records.
+
+Cannot automatically change warehouse layouts.
+
+**Customer**
+
+Can view their own authorized records.
+
+Cannot view other customers' invoices.
+
+## RLS SECURITY REQUIREMENTS
+
+- Use `auth.uid()` for authenticated identity.
+- Use membership-based authorization.
+- Store role assignments in trusted database records.
+- Do not authorize roles using editable user metadata.
+- Add SELECT, INSERT, UPDATE, and DELETE policies as appropriate.
+- Use both `USING` and `WITH CHECK` where necessary.
+- Prevent organization ID reassignment attacks.
+- Prevent users from creating records under another company.
+- Protect storage uploads and downloads.
+- Avoid recursive RLS policies.
+- Keep privileged functions narrowly scoped.
+- Never expose Supabase secret/service-role credentials in browser code.
+- Test both allowed and denied operations.
+
+Apply authorization based on the requested action and actual resource membership.
+
+For cross-company logistics transactions, create explicit authorized participant relationships rather than making an entire shipment publicly accessible.
+
+---
+
+# 10. COMPANY LOGO AND BRANDING UPLOADS
+
+Every registered company must have a working Company Profile & Branding settings page.
+
+## Company Settings Interface
+
+Use the project's existing dashboard design system.
+
+Create these sections:
+
+**Company Information**
+
+- Legal name
+- Trading name
+- Registration details
+- Tax details
+- Address
+- Contacts
+- Website
+- Country
+- Currency
+
+**Branding**
+
+- Upload Logo
+- Replace Logo
+- Remove Logo
+- Logo Preview
+- Light Logo
+- Dark Logo
+- Document Color
+- Header/Footer Information
+
+**Payment Information**
+
+- Bank details
+- Mobile money instructions
+- Payment notes
+- Supported currencies
+
+**Document Settings**
+
+- Invoice Template
+- Proforma Template
+- Quotation Template
+- Receipt Template
+- Delivery Note Template
+- Shipping Label Template
+
+**Numbering & Prefixes**
+
+- Invoice prefix
+- Quote prefix
+- Proforma prefix
+- Receipt prefix
+- Delivery note prefix
+
+**Employees & Permissions**
+
+- Employee directory
+- Invitations
+- Roles
+- Warehouse assignments
+- Access settings
+
+## STORAGE REQUIREMENTS
+
+Use real Supabase Storage.
+
+Organize company assets under organization-scoped paths.
+
+Conceptual example:
+
+`organizations/{organization_id}/branding/logo.png`
+
+Validate file type, size, and ownership.
+
+Use actual uploads, replacements, and deletions.
+
+Apply Storage RLS policies.
+
+Do not use base64 localStorage as the permanent logo system.
+
+Do not replace uploaded logos with a default Swahivo logo on company-issued documents.
+
+---
+
+# 11. AUTOMATIC COMPANY BRANDING ON BUSINESS DOCUMENTS
+
+**THIS IS A CORE SAAS REQUIREMENT.**
+
+Every company must be able to generate documents using its own approved company information and branding.
+
+Swahivo is the SaaS technology provider.
+
+The company using Swahivo is the issuer of its own business documents, unless the transaction explicitly identifies Swahivo as the legal issuer.
+
+## REQUIRED DOCUMENT TYPES
+
+1. Invoice
+2. Proforma Invoice
+3. Quotation / Price Quote
+4. Payment Receipt
+5. Delivery Note
+6. Shipping Label
+7. Warehouse Receiving Receipt
+8. Package QR Label
+9. Storage Location Label
+10. Packing List
+11. Waybill / Shipping Document where applicable
+
+## DOCUMENT HEADER
+
+Automatically include the issuing company's configured:
+
+- Logo
+- Legal/trading name
+- Business address
+- Phone
+- Email
+- Website
+- Registration number
+- Applicable tax details
+
+## DOCUMENT BODY
+
+Automatically retrieve relevant data from canonical records.
+
+For an invoice:
+
+- Invoice number
+- Issue date
+- Due date
+- Customer name
+- Customer address
+- Description of services
+- Quantities
+- Unit rates
+- Currency
+- Taxes where applicable
+- Discounts where applicable
+- Total amount
+- Payment terms
+- Payment status
+
+For a delivery note:
+
+- Delivery note number
+- Issuing company
+- Customer/consignee
+- Shipment number
+- Pickup and destination
+- Package list
+- Quantities
+- Delivery date
+- Assigned delivery provider where appropriate
+- Recipient acknowledgment
+- Proof-of-delivery reference
+
+For a warehouse receipt:
+
+- Receipt number
+- Company identity
+- Warehouse
+- Customer
+- Booking reference
+- Received packages
+- Condition
+- Received timestamp
+- Receiving employee
+- Confirmed storage location, only if putaway has actually occurred
+
+For package labels:
+
+- Company logo
+- Package ID
+- Canonical QR identifier
+- Shipment reference
+- Handling instructions
+- Current confirmed location when appropriate
+
+## DOCUMENT FOOTER
+
+Support:
+
+- Company contact details
+- Payment instructions
+- Company-specific notes
+- Terms and conditions
+- Authorized signature or signatory details
+
+Optionally allow a discreet “Powered by Swahivo Logistics OS” mark according to the company plan and platform settings.
+
+Do not replace the company's own branding with unrelated platform branding.
+
+---
+
+# 12. AUTOMATIC DATA POPULATION — SINGLE SOURCE
+
+Do not force staff to type the same company information repeatedly.
+
+Example:
+
+Company Owner registers:
+
+Company Name: Zanzibar Freight Ltd
+
+Company Address: Stone Town, Zanzibar
+
+Company Email: accounts@company.example
+
+Company Phone: Saved in company profile
+
+Company Logo: Uploaded to Supabase Storage
+
+When an authorized Finance Officer creates an invoice:
+
+1. Get their authenticated user identity.
+2. Resolve the active organization.
+3. Check invoice-creation permissions.
+4. Retrieve approved company details.
+5. Retrieve the configured company logo.
+6. Retrieve the real customer record.
+7. Retrieve applicable charge records.
+8. Calculate the invoice.
+9. Allocate a unique company-scoped invoice number.
+10. Generate the invoice document.
+11. Store the issued invoice.
+12. Save its document version and audit record.
+
+The user must not re-enter company name, address, logo, and contacts on every document.
+
+## IMPORTANT DOCUMENT VERSIONING
+
+Generated, issued documents must retain the company and financial information applicable when they were issued.
+
+If the company changes its logo or address later, previously issued invoices must not silently change.
+
+Store a document snapshot and immutable issued version.
+
+Allow corrections through explicitly authorized amendments, replacement versions, credit notes, or other appropriate document workflows.
+
+## PAYMENT DOCUMENT INTEGRITY
+
+A quotation is an offer.
+
+A proforma invoice is a preliminary billing document.
+
+An invoice is a formal payment request.
+
+A receipt acknowledges a confirmed payment.
+
+Do not treat these as identical document types.
+
+Do not automatically mark a proforma as paid.
+
+Do not issue a paid receipt merely because someone submitted an unverified transaction reference.
+
+---
+
+# 13. REAL PDF, PRINTING, AND QR DOCUMENT GENERATION
+
+Use libraries compatible with the existing Vite/React project.
+
+Preferred approaches:
+
+- Existing PDF infrastructure if functional
+- `@react-pdf/renderer` for structured PDF document generation
+- `pdf-lib` for appropriate PDF manipulation
+- `react-to-print` for print-ready HTML components
+- `qrcode` for machine-readable QR generation
+- `@zxing/browser` for QR scanning
+
+Check package compatibility before installation.
+
+Business documents must be:
+
+- Downloadable
+- Printable
+- Consistently formatted
+- Linked to actual company records
+- Linked to actual transactions
+- Stored with controlled access
+- Traceable through audit history
+
+Use A4 layouts for invoices, quotations, proformas, receipts, and delivery notes unless a specific template requires another format.
+
+Use configurable thermal-label dimensions for packages.
+
+Generate actual QR symbols.
+
+A QR scan must resolve a legitimate authorized package, location, document, or shipment record.
+
+Do not generate decorative QR images.
+
+---
+
+# 14. REPAIR ALL ADMIN DASHBOARD FEATURES
+
+The uploaded Admin Dashboard screenshot remains the master UI reference.
+
+Maintain exactly its general structure:
+
+- Dark navy sidebar
+- White top navigation
+- Light content background
+- Six KPI cards
+- Shipment chart
+- Warehouse capacity visualization
+- Live tracking panel
+- Storage booking summary
+- Invoice summary
+- Recent activities
+- Recent shipments
+
+## ADMIN SIDEBAR
+
+### Operations
+
+- Dashboard
+- Shipments
+- Create Shipment
+- Pickup Management
+- Delivery Management
+- Warehouse Management
+  - Warehouses
+  - Storage Bookings
+  - Receiving
+  - Inventory
+  - Warehouse → Shipping
+  - Stock Movements
+  - Storage Rates
+  - Locations & Bins
+- Customers
+- Drivers & Vehicles
+- Routes & Coverage
+
+### Finance
+
+- Quotes & Pricing
+- Invoices & Payments
+- Reports & Analytics
+
+### System
+
+- Users & Permissions
+- Notifications
+- Audit Logs
+- System Settings
+
+Each item must navigate to the correct working page.
+
+## ADMIN SAAS ADDITIONS
+
+Integrate company-oriented features within the relevant existing sections:
+
+- Company Settings
+- Company Branding
+- Employees & Permissions
+- Branch Management
+- Warehouse Staff Assignment
+- Driver Management
+- Business Document Settings
+- Payment Instructions
+- Subscription / Plan Management
+
+Do not destroy the primary reference sidebar hierarchy.
+
+Use nested navigation, routed tabs, or appropriate settings pages.
+
+---
+
+# 15. COMPLETE CUSTOMER, WAREHOUSE, AND DRIVER DASHBOARDS
+
+The platform must have interconnected, role-appropriate dashboards.
+
+## CUSTOMER DASHBOARD
+
+Complete:
+
+- Overview
+- Warehouse Bookings
+- My Inventory
+- Request Dispatch
+- My Shipments
+- Create Shipment
+- Track Shipment
+- Payments & Invoices
+- Notifications
+- Support
+- Settings
+
+Every customer sees only their own authorized data.
+
+## WAREHOUSE DASHBOARD
+
+Complete:
+
+- Overview
+- Storage Bookings
+- Expected Arrivals
+- Goods Receiving
+- Inventory
+- Warehouse Map
+- Map Designer
+- Racks & Bins
+- Receiving & Putaway
+- QR Labels & Scanner
+- Locate Package
+- Transfers & Picking
+- Packing & Dispatch
+- Cycle Counts
+- Reports
+- Warehouse Settings
+
+Warehouse staff access must be scoped to their assigned company and facility.
+
+## DRIVER DASHBOARD
+
+Complete:
+
+- Dashboard
+- My Assignments
+- Scheduled Pickups
+- Active Shipments
+- Deliveries
+- Scan Package
+- Delivery Confirmation
+- Trip History
+- Notifications
+- Profile
+
+Drivers must log in using their individual Supabase accounts.
+
+A driver assigned to Company A must not automatically see Company B's private shipment records.
+
+## PLATFORM SUPER ADMIN
+
+Complete platform-level oversight for:
+
+- SaaS Organizations
+- Company Accounts
+- Subscription Management
+- Global User Administration
+- Organization Status
+- Authorized Support Operations
+- Platform Settings
+- Security/Audit Oversight
+
+Super Admin authority must be granted through trusted backend administration, not user-selected registration fields.
+
+---
+
+# 16. REPAIR THE USER-TO-COMPANY WORKFLOW
+
+Example real-world scenario:
+
+A logistics business registers as:
+
+**Company: Zanzibar Logistics Ltd**
+
+The owner creates their account.
+
+The company uploads its logo.
+
+The company enters legal, tax, address, and payment information.
+
+The owner creates:
+
+- Warehouse 1 — Zanzibar
+- Warehouse 2 — Dar es Salaam
+
+The owner invites:
+
+- Warehouse Manager
+- Warehouse Staff
+- Operations Officer
+- Driver
+- Finance Officer
+
+Each person receives their own invitation.
+
+Each person signs in with their own Supabase Auth account.
+
+The system determines their authorized company membership and role.
+
+The Warehouse Manager sees appropriate warehouse data.
+
+The Driver sees their own assignments.
+
+The Finance Officer sees relevant company invoices and quotations.
+
+When Finance generates an invoice, the company's logo and information appear automatically.
+
+When warehouse staff create a package label, the label uses the company's branding and real package information.
+
+When a driver completes a delivery, the same shipment record updates for authorized Customer, Warehouse, and Admin views.
+
+**This entire workflow must work using actual Supabase records.**
+
+---
+
+# 17. COMPANY ACCOUNT SWITCHING
+
+Some people may belong to multiple companies.
+
+Example:
+
+A transport professional works with Company A and Company B.
+
+Do not create duplicate Supabase Auth identities for the same person.
+
+Use organization memberships.
+
+Provide a company switcher when more than one valid membership exists.
+
+Switching company must:
+
+1. Validate the selected membership.
+2. Update the active workspace context.
+3. Refresh company-scoped queries.
+4. Refresh permissions.
+5. Refresh company branding.
+6. Refresh accessible warehouses and shipments.
+7. Prevent stale Company A records from remaining visible within Company B's workspace.
+
+Never allow a user to gain access by manually changing a company ID in the URL or browser state.
+
+---
+
+# 18. SUBSCRIPTIONS AND SAAS ENTITLEMENTS
+
+Preserve any existing subscription and monetization functionality.
+
+If incomplete, implement the necessary SaaS account structure:
+
+- Subscription plans
+- Plan features
+- Organization subscriptions
+- Seat limits where applicable
+- Warehouse limits where applicable
+- Storage or shipment usage quotas where applicable
+- Billing periods
+- Renewal status
+- Upgrade/downgrade workflows
+- Usage monitoring
+
+Do not invent subscription prices or payment-provider integrations.
+
+Prices and commercial limits must come from actual configured plan records.
+
+Plan restrictions must be enforced in secure backend operations, not solely by disabling frontend buttons.
+
+Keep platform subscription billing separate from company-issued logistics invoices.
+
+---
+
+# 19. STRICT DESIGN REQUIREMENTS
+
+The supplied images are the design authority.
+
+The Admin Dashboard is the shared design foundation.
+
+Every child UI screenshot describes the specific page to implement.
+
+Recreate:
+
+- Sidebar arrangement
+- Header
+- Typography
+- Spacing
+- KPI cards
+- Tabs
+- Tables
+- Charts
+- Maps
+- Forms
+- Right-side detail panels
+- Action buttons
+- Status indicators
+
+Do not generate your own alternative UI.
+
+Do not create floating popup-card workflows to avoid building full pages.
+
+Use complete routed pages for major actions.
+
+If no reference exists for Company Branding or Employee Management, derive the layout from the Admin Dashboard and Settings reference patterns.
+
+Do not introduce a different visual theme.
+
+---
+
+# 20. MANDATORY END-TO-END TESTS
+
+Execute real tests wherever the available development environment permits.
+
+## Test A — Company Registration
+
+Register a genuine company account.
+
+Confirm that a Supabase Auth user and organization are created correctly.
+
+## Test B — Login
+
+Sign in using the registered account.
+
+Confirm the actual session and authorized dashboard.
+
+## Test C — Employee Invitation
+
+Invite an employee.
+
+Verify invitation acceptance and company membership.
+
+## Test D — Warehouse Role
+
+Sign in as a Warehouse Manager.
+
+Confirm access to assigned warehouses and denial of unauthorized warehouses.
+
+## Test E — Driver Role
+
+Sign in as a driver.
+
+Confirm only authorized assigned work is visible.
+
+## Test F — Company Isolation
+
+Create Company A and Company B test organizations.
+
+Attempt cross-company SELECT, INSERT, UPDATE, and DELETE operations.
+
+Verify unauthorized operations fail.
+
+## Test G — Logo Upload
+
+Upload a company logo to Supabase Storage.
+
+Reload the application.
+
+Verify that the logo persists.
+
+## Test H — Document Branding
+
+Create a quotation and invoice.
+
+Verify that the issuing company's real logo, legal name, address, and contact information appear.
+
+## Test I — Document Isolation
+
+Generate documents for two companies.
+
+Verify that Company A's logo and company details never appear on Company B's issued documents.
+
+## Test J — Invoice Versioning
+
+Issue an invoice.
+
+Change the company logo.
+
+Verify that the historical issued invoice remains unchanged.
+
+## Test K — Shipment Workflow
+
+Create a real shipment.
+
+Verify that it appears in the appropriate authorized dashboards.
+
+## Test L — Warehouse Workflow
+
+Register a package, assign storage, scan QR, and verify the saved location.
+
+## Test M — Delivery Workflow
+
+Assign a driver, confirm pickup, complete delivery, and verify status changes.
+
+## Test N — Billing
+
+Record or verify a legitimate payment and confirm invoice allocation and balances.
+
+## Test O — Dashboard Statistics
+
+Verify KPI cards calculate from actual database records.
+
+## Test P — Sidebar Audit
+
+Navigate to every visible sidebar item.
+
+Confirm that the destination contains functional features and not just a heading.
+
+## Test Q — RLS
+
+Verify tenant separation and role permissions using database tests and appropriate real-client scenarios.
+
+## Test R — Reference Screenshot Matching
+
+Render every completed page.
+
+Compare it against its corresponding uploaded reference.
+
+Repair significant layout differences.
+
+Do not claim a test passed unless it actually ran successfully.
+
+---
+
+# 21. REQUIRED IMPLEMENTATION ORDER
+
+Complete the work in controlled phases.
+
+### PHASE 0 — Codebase Inspection
+
+Audit the existing source files and identify real defects, backend usage, and data dependencies.
+
+### PHASE 1 — Supabase Foundation
+
+Repair or establish genuine Supabase connectivity and safely migrate any real data from the former backend.
+
+### PHASE 2 — Authentication
+
+Implement actual registration, login, sessions, and protected routes.
+
+### PHASE 3 — Multi-Tenant Company Architecture
+
+Implement organizations, memberships, roles, permissions, and RLS.
+
+### PHASE 4 — Company Onboarding
+
+Implement company registration, business information, branding, and employee invitations.
+
+### PHASE 5 — Existing Dashboard Repair
+
+Make Admin, Customer, Warehouse, and Driver routes functional and connect them to real data.
+
+### PHASE 6 — Operational Workflows
+
+Complete shipments, bookings, warehouse inventory, fleet assignments, receiving, picking, delivery, and tracking.
+
+### PHASE 7 — Company Document Automation
+
+Implement company-branded invoices, proformas, quotations, receipts, delivery notes, and labels.
+
+### PHASE 8 — Billing & Subscriptions
+
+Connect real financial records, payments, configurable prices, and SaaS entitlements.
+
+### PHASE 9 — Reporting & Notifications
+
+Connect all dashboards to real reporting queries and operational events.
+
+### PHASE 10 — Visual QA & Regression Testing
+
+Compare the implementation against the supplied screenshots and verify all core workflows.
+
+Do not bypass critical dependency work to make pages look complete.
+
+When a phase is partially completed, report exactly what remains. Do not mark it finished prematurely.
+
+---
+
+# 22. DELIVERABLES AND FINAL REPORT
+
+After each phase, provide:
+
+| Module | Current Implementation | Fix Applied | Supabase Verified | Tests Passed | Remaining Issues |
+|---|---|---|---|---|---|
+
+Report:
+
+1. Actual files changed.
+2. Components repaired.
+3. Database migrations created.
+4. RLS policies implemented.
+5. Supabase Auth integration.
+6. Storage buckets and access policies.
+7. Employee/organization relationships.
+8. Document templates implemented.
+9. Features connected to actual data.
+10. Tests actually executed.
+11. Security tests.
+12. Screenshot matching results.
+13. Outstanding blockers.
+
+Do not report success before a database operation or test has confirmed it.
+
+---
+
+# 23. FINAL NON-NEGOTIABLE INSTRUCTIONS
+
+**MY PROJECT ALREADY EXISTS. REPAIR IT.**
+
+**USE SUPABASE AS THE REAL BACKEND.**
+
+**REMOVE FAKE AUTHENTICATION, MOCK DATA, AND SIMULATED RESULTS.**
+
+**USE ONE AUTHORITATIVE DATA SOURCE FOR EVERY BUSINESS ENTITY.**
+
+**MAKE EVERY SIDEBAR FEATURE WORK.**
+
+**SUPPORT MULTIPLE INDEPENDENT LOGISTICS COMPANIES.**
+
+**GIVE EACH EMPLOYEE THEIR OWN LOGIN UNDER THEIR COMPANY.**
+
+**ENFORCE COMPANY, ROLE, BRANCH, AND WAREHOUSE PERMISSIONS.**
+
+**ALLOW COMPANIES TO UPLOAD LOGOS AND CONFIGURE THEIR OWN LEGAL/BUSINESS DETAILS.**
+
+**AUTOMATICALLY POPULATE COMPANY DETAILS ON INVOICES, PROFORMAS, QUOTATIONS, RECEIPTS, DELIVERY NOTES, AND QR LABELS.**
+
+**FOLLOW THE UPLOADED SCREENSHOTS, NOT YOUR OWN DESIGN IDEAS.**
+
+**KEEP THE EXISTING VITE + REACT + TYPESCRIPT + TAILWIND + SHADCN/UI STACK.**
+
+**TEST EVERYTHING AGAINST THE ACTUAL BACKEND.**
+
+The task is finished only when the existing Swahivo Logistics OS is functioning as a real, secure, multi-company SaaS application.
+
+Start by inspecting the existing code and backend, then implement the repairs directly in the project.

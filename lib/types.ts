@@ -42,6 +42,37 @@ export interface TrackingEvent {
   notes?: string;
 }
 
+export type TransportMode = 'road' | 'sea' | 'air' | 'rail' | 'intermodal';
+
+export interface LocationPoint {
+  id?: string;
+  name: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  region?: string;
+  lat: number;
+  lng: number;
+  type?: 'warehouse' | 'port' | 'airport' | 'hub' | 'delivery' | 'pickup' | 'customs';
+  timezone?: string;
+}
+
+export interface ShipmentLeg {
+  id: string;
+  mode: TransportMode;
+  origin: LocationPoint;
+  destination: LocationPoint;
+  status: 'Scheduled' | 'In Transit' | 'Completed' | 'Pending';
+  geometryType: 'road_confirmed' | 'sea_corridor' | 'air_corridor' | 'rail_network' | 'estimated';
+  path?: { lat: number; lng: number }[];
+  carrierName?: string;
+  vesselOrFlight?: string;
+  departureTime?: string;
+  arrivalTime?: string;
+  distanceKm?: number;
+  notes?: string;
+}
+
 export interface Shipment {
   id: string;
   trackingNumber: string; // e.g. TZL-20261025-001 or PKG-1042
@@ -60,6 +91,18 @@ export interface Shipment {
   pickupDate: string;
   expectedDeliveryDate: string;
   status: ShipmentStatus;
+  originLocation?: LocationPoint;
+  destinationLocation?: LocationPoint;
+  legs?: ShipmentLeg[];
+  currentGps?: {
+    lat: number;
+    lng: number;
+    timestamp: string;
+    speedKmH?: number;
+    heading?: string;
+    isStale?: boolean;
+    lastUpdateText?: string;
+  };
   weightKg: number;
   totalVolumeM3?: number;
   assignedDriverId?: string;

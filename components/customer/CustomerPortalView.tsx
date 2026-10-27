@@ -34,6 +34,7 @@ import {
   Phone,
   Mail,
   Building2,
+  RefreshCw,
 } from 'lucide-react';
 import { useApp } from '@/lib/store-context';
 import { RouteMap } from '@/components/common/RouteMap';
@@ -71,6 +72,7 @@ export default function CustomerPortalView({ initialTab = 'customer-overview' }:
     invoices,
     createStorageBooking,
     createShipment,
+    updateShipmentStatus,
     setActiveTab,
   } = useApp();
 
@@ -102,6 +104,12 @@ export default function CustomerPortalView({ initialTab = 'customer-overview' }:
   const [dispatchQty, setDispatchQty] = useState(10);
   const [dispatchDestination, setDispatchDestination] = useState('Zanzibar Terminal, Stone Town');
   const [dispatchSuccessMsg, setDispatchSuccessMsg] = useState('');
+
+  // Package Status Modal & state
+  const [statusModalShipment, setStatusModalShipment] = useState<any>(null);
+  const [statusModalNewStatus, setStatusModalNewStatus] = useState<string>('In Transit');
+  const [statusModalNote, setStatusModalNote] = useState('');
+  const [statusSuccessMsg, setStatusSuccessMsg] = useState('');
 
   // Shipments filter tab in overview
   const [shipmentsFilterTab, setShipmentsFilterTab] = useState<'All' | 'Warehouse' | 'ShippingOnly' | 'InTransit' | 'Delivered'>('All');
@@ -534,94 +542,93 @@ export default function CustomerPortalView({ initialTab = 'customer-overview' }:
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {[
-                    {
-                      no: 'TZL-20261025-001',
-                      type: 'From Warehouse',
-                      typeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-                      route: 'Dar es Salaam &rarr; Zanzibar',
-                      status: 'In Transit',
-                      statusColor: 'bg-blue-50 text-blue-700 border-blue-200',
-                      date: 'Oct 26, 2026',
-                      btn: 'Track',
-                    },
-                    {
-                      no: 'TZL-20261022-015',
-                      type: 'Shipping Only',
-                      typeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                      route: 'Dar es Salaam &rarr; Arusha',
-                      status: 'Out for Delivery',
-                      statusColor: 'bg-amber-50 text-amber-700 border-amber-200',
-                      date: 'Oct 24, 2026',
-                      btn: 'Track',
-                    },
-                    {
-                      no: 'TZL-20261018-010',
-                      type: 'From Warehouse',
-                      typeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-                      route: 'Dar es Salaam &rarr; Nairobi',
-                      status: 'Delivered',
-                      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                      date: 'Oct 18, 2026',
-                      btn: 'View',
-                    },
-                    {
-                      no: 'TZL-20261012-008',
-                      type: 'Shipping Only',
-                      typeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                      route: 'Arusha &rarr; Kigali',
-                      status: 'Delivered',
-                      statusColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                      date: 'Oct 13, 2026',
-                      btn: 'View',
-                    },
-                    {
-                      no: 'TZL-20261005-003',
-                      type: 'From Warehouse',
-                      typeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-                      route: 'Dar es Salaam &rarr; Mwanza',
-                      status: 'Cancelled',
-                      statusColor: 'bg-red-50 text-red-700 border-red-200',
-                      date: 'Oct 8, 2026',
-                      btn: 'View',
-                    },
-                  ]
+                  {(myShipments.length > 0 ? myShipments : shipments.slice(0, 6))
                     .filter((row) => {
-                      if (shipmentsFilterTab === 'Warehouse' && row.type !== 'From Warehouse') return false;
-                      if (shipmentsFilterTab === 'ShippingOnly' && row.type !== 'Shipping Only') return false;
+                      if (shipmentsFilterTab === 'Warehouse' && !row.serviceType?.includes('Storage')) return false;
+                      if (shipmentsFilterTab === 'ShippingOnly' && row.serviceType?.includes('Storage')) return false;
                       if (shipmentsFilterTab === 'InTransit' && row.status !== 'In Transit' && row.status !== 'Out for Delivery') return false;
                       if (shipmentsFilterTab === 'Delivered' && row.status !== 'Delivered') return false;
                       return true;
                     })
                     .map((row) => (
-                      <tr key={row.no} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3 px-4 font-mono font-bold text-blue-600">{row.no}</td>
+                      <tr key={row.id || row.trackingNumber} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3 px-4 font-mono font-bold text-blue-600">{row.trackingNumber}</td>
                         <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${row.typeColor}`}>
-                            {row.type}
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                              row.serviceType?.includes('Storage')
+                                ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            }`}
+                          >
+                            {row.serviceType?.includes('Storage') ? 'From Warehouse' : 'Shipping Only'}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-slate-700" dangerouslySetInnerHTML={{ __html: row.route }} />
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${row.statusColor}`}>
-                            {row.status}
-                          </span>
+                        <td className="py-3 px-4 text-slate-700 font-medium">
+                          {row.origin} &rarr; {row.destination}
                         </td>
-                        <td className="py-3 px-4 text-slate-500">{row.date}</td>
+                        <td className="py-3 px-4">
+                          {/* Live Package Status Selector */}
+                          <select
+                            value={row.status}
+                            onChange={(e) => {
+                              const updated = e.target.value as any;
+                              updateShipmentStatus(row.id, updated, `Status updated to ${updated} by customer`);
+                              if (trackedShipment?.id === row.id) {
+                                setTrackedShipment((prev: any) => ({ ...prev, status: updated }));
+                              }
+                            }}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-bold border cursor-pointer transition focus:outline-hidden ${
+                              row.status === 'Delivered'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                                : row.status === 'In Transit'
+                                ? 'bg-blue-50 text-blue-700 border-blue-300'
+                                : row.status === 'Out for Delivery'
+                                ? 'bg-amber-50 text-amber-700 border-amber-300'
+                                : row.status === 'Picked Up'
+                                ? 'bg-purple-50 text-purple-700 border-purple-300'
+                                : row.status === 'Pending Pickup'
+                                ? 'bg-sky-50 text-sky-700 border-sky-300'
+                                : 'bg-slate-100 text-slate-700 border-slate-300'
+                            }`}
+                            title="Click to change package status"
+                          >
+                            <option value="Pending Pickup">⏳ Pending Pickup</option>
+                            <option value="Assigned">👤 Assigned</option>
+                            <option value="Picked Up">🟣 Picked Up</option>
+                            <option value="In Transit">🔵 In Transit</option>
+                            <option value="Out for Delivery">🟠 Out for Delivery</option>
+                            <option value="Delivered">🟢 Delivered</option>
+                            <option value="On Hold">⏸️ On Hold</option>
+                            <option value="Cancelled">🔴 Cancelled</option>
+                          </select>
+                        </td>
+                        <td className="py-3 px-4 text-slate-500 font-medium">
+                          {row.expectedDeliveryDate?.includes('T')
+                            ? row.expectedDeliveryDate.split('T')[0]
+                            : row.expectedDeliveryDate || 'Oct 26, 2026'}
+                        </td>
                         <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => {
-                                setTrackQuery(row.no);
-                                const found = shipments.find((s) => s.trackingNumber === row.no);
-                                if (found) setTrackedShipment(found);
+                                setTrackQuery(row.trackingNumber);
+                                setTrackedShipment(row);
                               }}
                               className="px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition"
                             >
-                              {row.btn}
+                              Track
                             </button>
-                            <button className="text-slate-400 hover:text-slate-600 p-1">
-                              <MoreHorizontal className="w-4 h-4" />
+                            <button
+                              onClick={() => {
+                                setStatusModalShipment(row);
+                                setStatusModalNewStatus(row.status || 'In Transit');
+                              }}
+                              className="px-2 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition flex items-center gap-1"
+                              title="Update Status & Milestones"
+                            >
+                              <RefreshCw className="h-3 w-3 text-slate-500" />
+                              <span>Update</span>
                             </button>
                           </div>
                         </td>
@@ -847,9 +854,63 @@ export default function CustomerPortalView({ initialTab = 'customer-overview' }:
               <div className="relative rounded-lg overflow-hidden border border-slate-200">
                 <RouteMap heightClass="h-52" />
                 <div className="absolute top-2 left-2 bg-white/90 backdrop-blur px-2.5 py-1 rounded text-[10px] font-bold text-slate-800 shadow-2xs border border-slate-200/80">
-                  {trackedShipment?.trackingNumber || 'TZL-20261025-001'} • In Transit
+                  {trackedShipment?.trackingNumber || 'TZL-20261025-001'} • {trackedShipment?.status || 'In Transit'}
                 </div>
               </div>
+
+              {/* Status Modifier Controls for Tracked Package */}
+              {trackedShipment && (
+                <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-700">Change Package Status:</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">
+                      {trackedShipment.status}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateShipmentStatus(trackedShipment.id, 'In Transit', 'Package en route in corridor');
+                        setTrackedShipment((prev: any) => ({ ...prev, status: 'In Transit' }));
+                      }}
+                      className="px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold text-[10px] transition"
+                    >
+                      🔵 In Transit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateShipmentStatus(trackedShipment.id, 'Out for Delivery', 'Out on local delivery route');
+                        setTrackedShipment((prev: any) => ({ ...prev, status: 'Out for Delivery' }));
+                      }}
+                      className="px-2 py-1 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 font-bold text-[10px] transition"
+                    >
+                      🟠 Out for Delivery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateShipmentStatus(trackedShipment.id, 'Delivered', 'Confirmed delivery to consignee');
+                        setTrackedShipment((prev: any) => ({ ...prev, status: 'Delivered' }));
+                      }}
+                      className="px-2 py-1 rounded bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-[10px] transition"
+                    >
+                      🟢 Delivered
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateShipmentStatus(trackedShipment.id, 'Picked Up', 'Package picked up from staging');
+                        setTrackedShipment((prev: any) => ({ ...prev, status: 'Picked Up' }));
+                      }}
+                      className="px-2 py-1 rounded bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 font-bold text-[10px] transition"
+                    >
+                      🟣 Picked Up
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1078,6 +1139,136 @@ export default function CustomerPortalView({ initialTab = 'customer-overview' }:
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CHANGE PACKAGE STATUS ================= */}
+      {statusModalShipment && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm">Change Package Status</h3>
+                  <p className="text-xs text-slate-500 font-mono">{statusModalShipment.trackingNumber}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setStatusModalShipment(null)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {statusSuccessMsg && (
+              <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{statusSuccessMsg}</span>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">Select New Status</label>
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  {[
+                    { label: 'In Transit', icon: '🔵', bg: 'hover:bg-blue-50 hover:border-blue-300' },
+                    { label: 'Out for Delivery', icon: '🟠', bg: 'hover:bg-amber-50 hover:border-amber-300' },
+                    { label: 'Delivered', icon: '🟢', bg: 'hover:bg-emerald-50 hover:border-emerald-300' },
+                    { label: 'Picked Up', icon: '🟣', bg: 'hover:bg-purple-50 hover:border-purple-300' },
+                    { label: 'Pending Pickup', icon: '⏳', bg: 'hover:bg-sky-50 hover:border-sky-300' },
+                    { label: 'On Hold', icon: '⏸️', bg: 'hover:bg-slate-100 hover:border-slate-400' },
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => setStatusModalNewStatus(preset.label)}
+                      className={`text-left px-3 py-2 rounded-lg text-xs font-semibold border transition flex items-center gap-2 ${
+                        statusModalNewStatus === preset.label
+                          ? 'border-blue-600 bg-blue-50 text-blue-700 font-bold ring-2 ring-blue-600/20'
+                          : `border-slate-200 text-slate-700 ${preset.bg}`
+                      }`}
+                    >
+                      <span>{preset.icon}</span>
+                      <span>{preset.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <select
+                  value={statusModalNewStatus}
+                  onChange={(e) => setStatusModalNewStatus(e.target.value)}
+                  className="w-full p-2.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white cursor-pointer"
+                >
+                  <option value="Pending Pickup">Pending Pickup</option>
+                  <option value="Assigned">Assigned to Driver</option>
+                  <option value="Picked Up">Picked Up by Driver</option>
+                  <option value="In Transit">In Transit (Active Haul)</option>
+                  <option value="Out for Delivery">Out for Delivery (Last Mile)</option>
+                  <option value="Delivered">Delivered (Completed)</option>
+                  <option value="On Hold">On Hold (Exception)</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1.5">Status Note / Location Update</label>
+                <input
+                  type="text"
+                  value={statusModalNote}
+                  onChange={(e) => setStatusModalNote(e.target.value)}
+                  placeholder="e.g. Cleared Ubungo checkpoint, moving toward Morogoro"
+                  className="w-full p-2.5 rounded-lg border border-slate-300 text-xs font-medium"
+                />
+              </div>
+
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Origin → Destination:</span>
+                  <span className="font-bold text-slate-700">{statusModalShipment.origin} → {statusModalShipment.destination}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Current Status:</span>
+                  <span className="font-bold text-blue-600">{statusModalShipment.status}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setStatusModalShipment(null)}
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateShipmentStatus(
+                      statusModalShipment.id,
+                      statusModalNewStatus as any,
+                      statusModalNote || `Status updated to ${statusModalNewStatus}`
+                    );
+                    if (trackedShipment?.id === statusModalShipment.id) {
+                      setTrackedShipment((prev: any) => ({ ...prev, status: statusModalNewStatus }));
+                    }
+                    setStatusSuccessMsg(`Package updated to ${statusModalNewStatus}!`);
+                    setTimeout(() => {
+                      setStatusSuccessMsg('');
+                      setStatusModalShipment(null);
+                    }, 1200);
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-xs transition"
+                >
+                  Confirm & Update Status
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

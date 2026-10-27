@@ -40,7 +40,7 @@ import {
 import { useAppStore } from '@/lib/store-context';
 
 export default function WarehouseReports() {
-  const { packages, racks, warehouses } = useAppStore();
+  const { packages, racks } = useAppStore();
   const [activeTab, setActiveTab] = useState<'overview' | 'inventory' | 'utilization' | 'movement' | 'cycle' | 'aging' | 'custom'>('overview');
   const [selectedWarehouse, setSelectedWarehouse] = useState('WH001 - Main Warehouse');
   const [selectedZone, setSelectedZone] = useState('All Zones');
